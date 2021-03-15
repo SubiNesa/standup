@@ -14,7 +14,9 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@standup/front/standup/home": ["libs/front/standup/home/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

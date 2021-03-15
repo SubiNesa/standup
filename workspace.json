@@ -1,23 +1,12 @@
 {
   "version": 2,
-  "cli": {
-    "defaultCollection": "@nrwl/react"
-  },
+  "cli": { "defaultCollection": "@nrwl/react" },
   "defaultProject": "standup",
   "generators": {
     "@nrwl/react": {
-      "application": {
-        "style": "scss",
-        "linter": "eslint",
-        "babel": true
-      },
-      "component": {
-        "style": "scss"
-      },
-      "library": {
-        "style": "scss",
-        "linter": "eslint"
-      }
+      "application": { "style": "scss", "linter": "eslint", "babel": true },
+      "component": { "style": "scss" },
+      "library": { "style": "scss", "linter": "eslint" }
     }
   },
   "projects": {
@@ -70,13 +59,9 @@
         },
         "serve": {
           "executor": "@nrwl/web:dev-server",
-          "options": {
-            "buildTarget": "standup:build"
-          },
+          "options": { "buildTarget": "standup:build" },
           "configurations": {
-            "production": {
-              "buildTarget": "standup:build:production"
-            }
+            "production": { "buildTarget": "standup:build:production" }
           }
         },
         "lint": {
@@ -108,15 +93,32 @@
             "devServerTarget": "standup:serve"
           },
           "configurations": {
-            "production": {
-              "devServerTarget": "standup:serve:production"
-            }
+            "production": { "devServerTarget": "standup:serve:production" }
           }
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
+          "options": { "lintFilePatterns": ["apps/standup-e2e/**/*.{js,ts}"] }
+        }
+      }
+    },
+    "front-standup-home": {
+      "root": "libs/front/standup/home",
+      "sourceRoot": "libs/front/standup/home/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["apps/standup-e2e/**/*.{js,ts}"]
+            "lintFilePatterns": ["libs/front/standup/home/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/front/standup/home"],
+          "options": {
+            "jestConfig": "libs/front/standup/home/jest.config.js",
+            "passWithNoTests": true
           }
         }
       }

@@ -1,3 +1,6 @@
 module.exports = {
-  projects: ['<rootDir>/apps/standup'],
+  projects: [
+    '<rootDir>/apps/standup',
+    '<rootDir>/libs/front/standup/home',
+  ],
 };
