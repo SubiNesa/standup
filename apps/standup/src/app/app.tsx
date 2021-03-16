@@ -3,11 +3,11 @@ import styles from './app.module.scss';
 
 import { Route, Link } from 'react-router-dom';
 
-import AdminNavbar from "./AdminNavbar";
+import AdminNavbar from './AdminNavbar';
 import { FrontStandupHome } from '@standup/front/standup/home';
+import { FrontStandupGoal } from '@standup/front/standup/goal';
 
 export function App() {
-
   const mainPanel = React.useRef(null);
 
   return (
@@ -19,7 +19,7 @@ export function App() {
             <Switch>{getRoutes(routes)}</Switch>
           </div> */}
           <Route path="/" exact component={FrontStandupHome} />
-          <Route path="/goal" component={FrontStandupHome} />
+          <Route path="/goal" component={FrontStandupGoal} />
         </div>
       </div>
     </div>
