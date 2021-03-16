@@ -19,6 +19,7 @@
     "standup": { "tags": [] },
     "standup-e2e": { "tags": [], "implicitDependencies": ["standup"] },
     "front-standup-home": { "tags": [] },
-    "front-standup-goal": { "tags": [] }
+    "front-standup-goal": { "tags": [] },
+    "api": { "tags": [] }
   }
 }

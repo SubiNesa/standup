@@ -8,9 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 /* eslint-disable-next-line */
 export interface HomeTask {
-    ticket: ReactNode;
-    icon: ReactNode;
-    days: number;
+    goal: any;
+    color: string;
 }
 
 
@@ -24,7 +23,7 @@ const useResize = (myRef) => {
     
     useEffect(() => {
         const handleResize = () => {
-        setWidth(myRef.current.parentElement.offsetWidth)
+        setWidth(myRef.current.parentElement.parentElement.offsetWidth)
         setHeight(myRef.current.offsetHeight)
         }
 
@@ -44,21 +43,21 @@ const useResize = (myRef) => {
 
     const renderTooltip = (props) => (
         <Popover id="popover-basic" {...props}>
-        <Popover.Title as="h3">JIRA-17</Popover.Title>
-        <Popover.Content>
-            <Row >
-                <Col sm={1}><FontAwesomeIcon icon={["fas", "tasks"]} /></Col>
-                <Col>Refactoring the old cold</Col>
-            </Row>
-            <Row >
-                <Col sm={1}><FontAwesomeIcon icon={["fas", "clock"]} /></Col>
-                <Col>Tommorow</Col>
-            </Row>
-            <Row >
-                <Col sm={1}><FontAwesomeIcon icon={["fas", "exclamation-triangle"]} /></Col>
-                <Col>Blocked</Col>
-            </Row>
-        </Popover.Content>
+            <Popover.Title as="h3">{props.goal.ticket}</Popover.Title>
+            <Popover.Content>
+                <Row >
+                    <Col sm={1}><FontAwesomeIcon icon={["fas", "tasks"]} /></Col>
+                    <Col>{props.goal.title}</Col>
+                </Row>
+                <Row >
+                    <Col sm={1}><FontAwesomeIcon icon={["fas", "clock"]} /></Col>
+                    <Col>{props.goal.finish}</Col>
+                </Row>
+                <Row >
+                    <Col sm={1}><FontAwesomeIcon icon={["fas", "exclamation-triangle"]} /></Col>
+                    <Col>{props.goal.blocked}</Col>
+                </Row>
+            </Popover.Content>
         </Popover>
     );
 
@@ -68,9 +67,9 @@ const useResize = (myRef) => {
             'position': 'absolute',
             'borderRadius': '.25rem',
             'padding': '0.1em 0.4em',
-            'backgroundColor': '#28a745',
+            'backgroundColor': `#${props.color}`,
             'color': '#fff',
-            'width': (width * (props.days ? props.days : 1) - 24)
+            'width': (width * (props?.goal?.days ? props.goal.days : 1) - 24)
         };
     }
 
@@ -78,9 +77,9 @@ const useResize = (myRef) => {
         <OverlayTrigger
             placement="bottom"
             delay={{ show: 250, hide: 400 }}
-            overlay={renderTooltip}
+            overlay={renderTooltip(props)}
             >
-            <div style={setStyle()} ref={taskRef}>{props.ticket}</div>
+            <div style={setStyle()} ref={taskRef}>{props.goal.ticket}</div>
             
 
         </OverlayTrigger>              

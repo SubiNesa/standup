@@ -1,12 +1,23 @@
 {
   "version": 2,
-  "cli": { "defaultCollection": "@nrwl/react" },
+  "cli": {
+    "defaultCollection": "@nrwl/react"
+  },
   "defaultProject": "standup",
   "generators": {
     "@nrwl/react": {
-      "application": { "style": "scss", "linter": "eslint", "babel": true },
-      "component": { "style": "scss" },
-      "library": { "style": "scss", "linter": "eslint" }
+      "application": {
+        "style": "scss",
+        "linter": "eslint",
+        "babel": true
+      },
+      "component": {
+        "style": "scss"
+      },
+      "library": {
+        "style": "scss",
+        "linter": "eslint"
+      }
     }
   },
   "projects": {
@@ -17,7 +28,9 @@
       "targets": {
         "build": {
           "executor": "@nrwl/web:build",
-          "outputs": ["{options.outputPath}"],
+          "outputs": [
+            "{options.outputPath}"
+          ],
           "options": {
             "outputPath": "dist/apps/standup",
             "index": "apps/standup/src/index.html",
@@ -28,7 +41,9 @@
               "apps/standup/src/favicon.ico",
               "apps/standup/src/assets"
             ],
-            "styles": ["apps/standup/src/styles.scss"],
+            "styles": [
+              "apps/standup/src/styles.scss"
+            ],
             "scripts": [],
             "webpackConfig": "@nrwl/react/plugins/webpack"
           },
@@ -59,20 +74,29 @@
         },
         "serve": {
           "executor": "@nrwl/web:dev-server",
-          "options": { "buildTarget": "standup:build" },
+          "options": {
+            "buildTarget": "standup:build",
+            "proxyConfig": "./proxy.config.js"
+          },
           "configurations": {
-            "production": { "buildTarget": "standup:build:production" }
+            "production": {
+              "buildTarget": "standup:build:production"
+            }
           }
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["apps/standup/**/*.{ts,tsx,js,jsx}"]
+            "lintFilePatterns": [
+              "apps/standup/**/*.{ts,tsx,js,jsx}"
+            ]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/standup"],
+          "outputs": [
+            "coverage/apps/standup"
+          ],
           "options": {
             "jestConfig": "apps/standup/jest.config.js",
             "passWithNoTests": true
@@ -93,12 +117,18 @@
             "devServerTarget": "standup:serve"
           },
           "configurations": {
-            "production": { "devServerTarget": "standup:serve:production" }
+            "production": {
+              "devServerTarget": "standup:serve:production"
+            }
           }
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["apps/standup-e2e/**/*.{js,ts}"] }
+          "options": {
+            "lintFilePatterns": [
+              "apps/standup-e2e/**/*.{js,ts}"
+            ]
+          }
         }
       }
     },
@@ -110,12 +140,16 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["libs/front/standup/home/**/*.{ts,tsx,js,jsx}"]
+            "lintFilePatterns": [
+              "libs/front/standup/home/**/*.{ts,tsx,js,jsx}"
+            ]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/front/standup/home"],
+          "outputs": [
+            "coverage/libs/front/standup/home"
+          ],
           "options": {
             "jestConfig": "libs/front/standup/home/jest.config.js",
             "passWithNoTests": true
@@ -131,14 +165,77 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["libs/front/standup/goal/**/*.{ts,tsx,js,jsx}"]
+            "lintFilePatterns": [
+              "libs/front/standup/goal/**/*.{ts,tsx,js,jsx}"
+            ]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/front/standup/goal"],
+          "outputs": [
+            "coverage/libs/front/standup/goal"
+          ],
           "options": {
             "jestConfig": "libs/front/standup/goal/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "api": {
+      "root": "apps/api",
+      "sourceRoot": "apps/api/src",
+      "projectType": "application",
+      "prefix": "api",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/apps/api",
+            "main": "apps/api/src/main.ts",
+            "tsConfig": "apps/api/tsconfig.app.json",
+            "assets": [
+              "apps/api/src/assets"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/api/src/environments/environment.ts",
+                  "with": "apps/api/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "api:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/api/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/apps/api"
+          ],
+          "options": {
+            "jestConfig": "apps/api/jest.config.js",
             "passWithNoTests": true
           }
         }

@@ -3,5 +3,6 @@ module.exports = {
     '<rootDir>/apps/standup',
     '<rootDir>/libs/front/standup/home',
     '<rootDir>/libs/front/standup/goal',
+    '<rootDir>/apps/api',
   ],
 };

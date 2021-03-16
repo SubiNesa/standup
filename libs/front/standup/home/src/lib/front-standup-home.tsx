@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import styles from  './front-standup-home.module.scss';
 
@@ -11,7 +11,21 @@ import HomeTask from './task/task';
 export interface FrontStandupHomeProps {}
 
 export function FrontStandupHome(props: FrontStandupHomeProps) {
+  
+  const [state, setStandUp] = useState({
+    loading: false,
+    goals: [],
+  });
 
+  useEffect(() => {
+    setStandUp({ ...state, loading: true });
+    const apiUrl = `/api/goals`;
+    fetch(apiUrl)
+      .then((res) => res.json())
+      .then((goals) => {
+        setStandUp({ loading: false, goals: goals });
+      });
+  }, [setStandUp]);
 
   const navigationButtons = {
    'marginBottom': '15px'
@@ -28,7 +42,7 @@ export function FrontStandupHome(props: FrontStandupHomeProps) {
       <div className={styles.header}>
         <Container>
           <Row >
-            <Col ><h3>Activities viewer</h3></Col>
+            <Col ><h3>Goals viewer</h3></Col>
           </Row>
         </Container>
       </div>
@@ -52,26 +66,34 @@ export function FrontStandupHome(props: FrontStandupHomeProps) {
                     <td style={td}>Thursday</td>
                     <td style={td}>Friday</td>
                   </tr>
-                  <tr>
-                    <td className="align-middle">Thomas</td>
-                    <td><HomeTask ticket="JIRA-12" icon="exclamation-triangle" days={2}/></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                      <HomeTask ticket="JIRA-14" icon="exclamation-triangle" days={1}/><br/>
-                      <div style={badgeSep}></div>
-                      <HomeTask ticket="JIRA-15" icon="exclamation-triangle" days={1}/><br/>
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>Max</td>
-                    <td><HomeTask ticket="JIRA-17" icon="exclamation-triangle" days={4}/></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
+                  {
+                    state.goals.map((item, index) =>{
+                      return <tr key={index}><td>{item.user}</td>
+                      
+                      {
+                        item.data.map((goals, tdKey) => {
+                          if (goals && Array.isArray(goals)) {
+                              return <td key={tdKey}>
+                              {
+                                goals.map((goal, sectionId) => {
+                                  if (goal && goal.ticket) {
+                                    return <section key={sectionId}>
+                                      <HomeTask goal={goal} color={item.color}/>
+                                        <br/>
+                                        <div style={badgeSep}></div>
+                                      </section>
+                                  } else {
+                                    return <section key={sectionId}><br/><div style={badgeSep}></div></section>
+                                  }
+                                })
+                              }</td>
+                          }
+                          return <td></td>
+                        })
+                      }
+                      </tr>
+                    })
+                  }
                 </tbody>
               </Table>
             </Col>
