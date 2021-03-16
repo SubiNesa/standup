@@ -1,8 +1,6 @@
-import React, { ForwardedRef, ReactNode, useEffect, useRef, useState } from 'react';
+import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 
-import styles from  './home-task.module.scss';
-
-import { Row, Col, Badge, OverlayTrigger, Popover } from 'react-bootstrap';
+import { Row, Col, OverlayTrigger, Popover } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
@@ -50,19 +48,49 @@ const useResize = (myRef) => {
                     <Col>{props.goal.title}</Col>
                 </Row>
                 <Row >
-                    <Col sm={1}><FontAwesomeIcon icon={["fas", "clock"]} /></Col>
-                    <Col>{props.goal.finish}</Col>
+                    <Col sm={1}><FontAwesomeIcon icon={["fas", "comments"]} /></Col>
+                    <Col>{props.goal.details}</Col>
                 </Row>
                 <Row >
-                    <Col sm={1}><FontAwesomeIcon icon={["fas", "exclamation-triangle"]} /></Col>
-                    <Col>{props.goal.blocked}</Col>
+                    <Col sm={1}><FontAwesomeIcon icon={["fas", "flag-checkered"]} /></Col>
+                    <Col>{props.goal.finish}</Col>
                 </Row>
+                {
+                    props.goal.blocked ?
+                    <Row >
+                        <Col sm={1}><FontAwesomeIcon icon={["fas", "exclamation-triangle"]} /></Col>
+                        <Col>{props.goal.blocked}</Col>
+                    </Row>
+                    : <span></span>
+                }
+                {
+                    props.goal.previous && Array.isArray(props.goal.previous) ?
+          
+                        props.goal.previous.map((p, pIndex) => {
+                            return <>
+                                <hr></hr>
+                                <Row >
+                                    <Col sm={1}><FontAwesomeIcon icon={["fas", "tasks"]} /></Col>
+                                    <Col>{p.title}</Col>
+                                </Row>
+                                <Row >
+                                    <Col sm={1}><FontAwesomeIcon icon={["fas", "comments"]} /></Col>
+                                    <Col>{p.details}</Col>
+                                </Row>
+                                <Row >
+                                    <Col sm={1}><FontAwesomeIcon icon={["fas", "flag-checkered"]} /></Col>
+                                    <Col>{p.finish}</Col>
+                                </Row>
+                            </>
+                        })
+                    : <span></span>
+                }
             </Popover.Content>
         </Popover>
     );
 
 
-    const setStyle = () => {
+    const setStyle = (): CSSProperties  => {
         return {
             'position': 'absolute',
             'borderRadius': '.25rem',

@@ -12,6 +12,9 @@ export interface FrontStandupHomeProps {}
 
 export function FrontStandupHome(props: FrontStandupHomeProps) {
   
+  const dates = [];
+  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
   const [state, setStandUp] = useState({
     loading: false,
     goals: [],
@@ -19,13 +22,28 @@ export function FrontStandupHome(props: FrontStandupHomeProps) {
 
   useEffect(() => {
     setStandUp({ ...state, loading: true });
-    const apiUrl = `/api/goals`;
+    const monday = getMonday(new Date());
+    const apiUrl = `/api/goals/${monday.getFullYear()}-${(monday.getMonth() + 1)}-${monday.getDate()}`;
     fetch(apiUrl)
       .then((res) => res.json())
       .then((goals) => {
         setStandUp({ loading: false, goals: goals });
       });
   }, [setStandUp]);
+
+  const getMonday = (d) => {
+    d = new Date(d);
+    var day = d.getDay(),
+        diff = d.getDate() - day + (day == 0 ? -6:1); // adjust when day is sunday
+    return new Date(d.setDate(diff));
+  }
+
+  for (let index = 0; index < 5; index++) {
+    const d = new Date(getMonday(new Date()));
+    d.setDate(d.getDate() + index);
+    dates.push({ day: days[index], date: `${d.getDate()}.${(d.getMonth() + 1)}`});
+  }
+
 
   const navigationButtons = {
    'marginBottom': '15px'
@@ -60,11 +78,11 @@ export function FrontStandupHome(props: FrontStandupHomeProps) {
                 <tbody>
                   <tr>
                     <td></td>
-                    <td style={td}>Monday</td>
-                    <td style={td}>Tuesday</td>
-                    <td style={td}>Wednesday</td>
-                    <td style={td}>Thursday</td>
-                    <td style={td}>Friday</td>
+                    {
+                      dates.map((d, dIndex) => {
+                        return <td style={td} key={dIndex}>{d.day} {d.date}</td>
+                      })
+                    }
                   </tr>
                   {
                     state.goals.map((item, index) =>{
@@ -88,7 +106,7 @@ export function FrontStandupHome(props: FrontStandupHomeProps) {
                                 })
                               }</td>
                           }
-                          return <td></td>
+                          return <td key={tdKey}></td>
                         })
                       }
                       </tr>

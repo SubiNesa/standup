@@ -46,10 +46,37 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
     }
   }
 
+  const saveGoal = (data) => {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    };
+    fetch('/api/goals', requestOptions)
+      .then(async response => {
+          const data = await response.json();
+
+          // check for error response
+          if (!response.ok) {
+              // get error message from body or default to response status
+              const error = (data && data.message) || response.status;
+              return Promise.reject(error);
+          }
+
+          // this.setState({ postId: data.id })
+      })
+      .catch(error => {
+          // this.setState({ errorMessage: error.toString() });
+          console.error('There was an error!', error);
+      });
+  }
+
   const onGoalSubmit = (event) => {
     event.preventDefault();
 
     console.log(goal);
+
+    saveGoal(goal);
 
     setLoading(true)
   }

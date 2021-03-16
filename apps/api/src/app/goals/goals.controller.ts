@@ -1,12 +1,55 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiBearerAuth,
+  ApiOperation,
+} from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 import { GoalsService } from './goals.service';
 
+import { CreateGoalDto } from './dto/create-goal.dto';
+
+@ApiTags('Goals')
 @Controller('goals')
 export class GoalsController {
   constructor(private readonly goalsService: GoalsService) {}
 
-  @Get()
+
+  @Get(':date')
+  // swagger
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get all goals' })
+  @ApiOkResponse({})
+  async getAllGoal(@Param() params) {
+    return await this.goalsService.getAllGoals(params.date);
+  }
+
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  //@UseGuards(AuthGuard('jwt'))
+  //@Roles('admin')
+  @ApiOperation({summary: 'Create one goal'})
+  @ApiBearerAuth()
+  @ApiCreatedResponse({})
+  async createGoal(@Body() createGoalDto: CreateGoalDto) {
+      return await this.goalsService.createGoal(createGoalDto);
+  }
+
+  // @Put(':id')
+  // @HttpCode(HttpStatus.OK)
+  // //@UseGuards(AuthGuard('jwt'))
+  // //@Roles('admin')
+  // @ApiOperation({summary: 'Update one goal'})
+  // @ApiBearerAuth()
+  // @ApiCreatedResponse({})
+  // async updateWithAllParams(@Param() params, @Body() createGoalDto: CreateGoalDto) {
+  //     return await this.goalsService.updateGoalPut(params.id, createGoalDto);
+  // }
+
+  @Get('/data')
   getData() {
     return this.goalsService.getData();
   }
