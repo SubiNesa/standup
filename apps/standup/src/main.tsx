@@ -6,8 +6,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
-import { faClock, faExclamationTriangle, faTasks, faComments, faFlagCheckered } from '@fortawesome/free-solid-svg-icons'
-library.add(fab, faExclamationTriangle, faTasks, faClock, faComments, faFlagCheckered);
+import { faClock, faExclamationTriangle, faTasks, faComments, faFlagCheckered, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+library.add(fab, faExclamationTriangle, faTasks, faClock, faComments, faFlagCheckered, faEdit, faTrashAlt);
 
 import App from './app/app';
 

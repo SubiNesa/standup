@@ -13,7 +13,8 @@ function Header() {
         </Nav>
         <Nav>
           <NavDropdown title="Account" id="collasible-nav-dropdown" alignRight>
-            <NavDropdown.Item href="#">Profile</NavDropdown.Item>
+            <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
+            <NavDropdown.Item href="/admin">Admin</NavDropdown.Item>
             <NavDropdown.Divider />
             <NavDropdown.Item href="#">Logout</NavDropdown.Item>
           </NavDropdown>

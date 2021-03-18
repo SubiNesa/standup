@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import styles from  './front-standup-home.module.scss';
 
-import { Container, Row, Col, Table, Button, Badge, OverlayTrigger, Popover } from 'react-bootstrap';
+import { Container, Row, Col, Table, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight, faClock, faExclamationTriangle, faTasks } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import HomeTask from './task/task';
 
 /* eslint-disable-next-line */

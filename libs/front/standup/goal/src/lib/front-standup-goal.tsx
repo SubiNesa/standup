@@ -3,10 +3,6 @@ import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 
 import styles from  './front-standup-goal.module.scss';
 
-function simulateNetworkRequest() {
-  return new Promise((resolve) => setTimeout(resolve, 2000));
-}
-
 /* eslint-disable-next-line */
 export interface FrontStandupGoalProps {
   ticket: any;
@@ -29,6 +25,8 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
   }
 
 
+  // loading
+  const [isLoading, setLoading] = useState(false);
   // submit
   const [goal, setGoal] = useState({
     ticket: '',
@@ -47,14 +45,19 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
   }
 
   const saveGoal = (data) => {
+    setLoading(true);
+    
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     };
+    
     fetch('/api/goals', requestOptions)
       .then(async response => {
           const data = await response.json();
+
+          setLoading(false);
 
           // check for error response
           if (!response.ok) {
@@ -66,6 +69,7 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
           // this.setState({ postId: data.id })
       })
       .catch(error => {
+          setLoading(false);
           // this.setState({ errorMessage: error.toString() });
           console.error('There was an error!', error);
       });
@@ -73,25 +77,8 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
 
   const onGoalSubmit = (event) => {
     event.preventDefault();
-
-    console.log(goal);
-
     saveGoal(goal);
-
-    setLoading(true)
   }
-
-
-  // Loading
-  const [isLoading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (isLoading) {
-      simulateNetworkRequest().then(() => {
-        setLoading(false);
-      });
-    }
-  }, [isLoading]);
 
   return (
     <div>

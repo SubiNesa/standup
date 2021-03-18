@@ -7,6 +7,8 @@ import AdminNavbar from './AdminNavbar';
 import { FrontStandupHome } from '@standup/front/standup/home';
 import { FrontStandupGoal } from '@standup/front/standup/goal';
 
+import { FrontStandupAdmin } from '@standup/front/standup/admin';
+
 export function App() {
   const mainPanel = React.useRef(null);
 
@@ -19,6 +21,7 @@ export function App() {
             <Switch>{getRoutes(routes)}</Switch>
           </div> */}
           <Route path="/" exact component={FrontStandupHome} />
+          <Route path="/admin" component={FrontStandupAdmin} />
           <Route path="/goal" component={FrontStandupGoal} />
         </div>
       </div>

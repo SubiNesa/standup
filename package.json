@@ -37,6 +37,7 @@
     "@nestjs/passport": "^7.1.5",
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/swagger": "^4.7.16",
+    "bcrypt": "^5.0.1",
     "bootstrap": "^4.6.0",
     "class-validator": "^0.13.1",
     "core-js": "^3.6.5",
