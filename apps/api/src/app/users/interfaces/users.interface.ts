@@ -6,6 +6,7 @@ export interface User extends Document {
     password: string;
     roles: [string];
     teams: [string];
+    projects: [string];
     createdAt: Date;
     updatedAt: Date;
 }

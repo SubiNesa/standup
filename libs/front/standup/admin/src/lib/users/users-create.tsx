@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useRef, useState } from 'react';
+import React, { CSSProperties, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
@@ -7,7 +7,7 @@ import styles from './../front-standup-admin.module.scss';
 
 export function UsersCreate(props: any) {
     const history = useHistory();
-    let { id } = useParams();
+    const params: any = useParams();
 
     // loading
     const [isLoading, setLoading] = useState(false);
@@ -16,13 +16,14 @@ export function UsersCreate(props: any) {
         name: '',
         email: '',
         roles: [],
-        teams: []
+        teams: [],
+        projects: []
     });
 
-    if (id) {
+    if (params?.id) {
         useEffect(() => {
-            fetch(`/api/users/${id}`)
-              .then((res) => res.json())
+            fetch(`/api/users/${params.id}`)
+              .then((res) =>  !res.ok ? history.push('/admin/user/') : res.json())
               .then((user) => {
                 setUser({ ...user, ...user });
               });
@@ -42,6 +43,8 @@ export function UsersCreate(props: any) {
                 data = user[event.target.name];
             }
             setUser({...user, [event.target.name]: data});
+        } else if (event.target.name === 'projects') {
+            setUser({...user, [event.target.name]: event.target.value.split(',').map((item) => item.trim()) });
         } else {
             setUser({...user, [event.target.name]: event.target.value });
         }
@@ -55,12 +58,12 @@ export function UsersCreate(props: any) {
         }
         
         const requestOptions = {
-          method: id ? 'PUT' : 'POST',
+          method: params.id ? 'PUT' : 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         };
 
-        const api = id ? `/api/users/${id}` : '/api/users';
+        const api = params.id ? `/api/users/${params.id}` : '/api/users';
         
         fetch(api, requestOptions)
           .then(async response => {
@@ -94,7 +97,7 @@ export function UsersCreate(props: any) {
             <div className={styles.header}>
                 <Container>
                     <Row>
-                        <Col><h3>Admin • {id ? 'Edit' : 'Add' } User</h3></Col>
+                        <Col><h3>Admin • {params.id ? 'Edit' : 'Add' } User</h3></Col>
                     </Row>
                 </Container>
             </div>
@@ -114,46 +117,50 @@ export function UsersCreate(props: any) {
                             </Form.Group>
                         </Form.Row>
 
-                        <Row>
+                        <Form.Row>
+                            <Form.Group as={Col} controlId="formGridProjects">
+                                <Form.Label>Projects</Form.Label>
+                                <Form.Control type="text" name="projects" value={user.projects} onChange={handleChange}/>
+                            </Form.Group>
+
                             <Col>
                                 <p>Roles</p>
-                                <Form.Row>
+                                <Form.Row className="text-center">
                                     <Form.Group as={Col} id="formGridroles">
-                                        <Form.Check type="checkbox" label="Developer" name="roles" value="developer" checked={user.roles.includes('developer')} onChange={handleChange}/>
+                                        <Form.Check type="checkbox" label="Developer" name="roles" value="developer" checked={user?.roles && user?.roles.includes('developer')} onChange={handleChange}/>
                                         <Form.Control.Feedback type="valid">- add goals</Form.Control.Feedback>
                                     </Form.Group>
-                                </Form.Row>
-                                <Form.Row>
+
                                     <Form.Group as={Col} id="formGridAdmin">
-                                        <Form.Check type="checkbox" label="Admin" name="roles" value="admin" checked={user.roles.includes('admin')} onChange={handleChange}/>
+                                        <Form.Check type="checkbox" label="Admin" name="roles" value="admin" checked={user?.roles && user?.roles.includes('admin')} onChange={handleChange}/>
                                     </Form.Group>
                                 </Form.Row>
                             </Col>
-                            <Col>
+                        </Form.Row>
+                        <Form.Row>
+                            <Col md={6}></Col>
+                            <Col md={6}>
                                 <p>Team</p>
-                                <Form.Row>
+                                <Form.Row className="text-center">
                                     <Form.Group as={Col} id="formGridFront">
-                                        <Form.Check label="Frontend" type="checkbox" name="teams" value="frontend" checked={user.teams.includes('frontend')} onChange={handleChange}/>
+                                        <Form.Check label="Frontend" type="checkbox" name="teams" value="frontend" checked={user?.teams && user?.teams.includes('frontend')} onChange={handleChange}/>
                                     </Form.Group>
-                                </Form.Row>
-                                <Form.Row>
+                                
                                     <Form.Group as={Col} id="formGridBackend">
-                                        <Form.Check label="Backend" type="checkbox" name="teams" value="backend" checked={user.teams.includes('backend')} onChange={handleChange}/>
+                                        <Form.Check label="Backend" type="checkbox" name="teams" value="backend" checked={user?.teams && user?.teams.includes('backend')} onChange={handleChange}/>
                                     </Form.Group>
-                                </Form.Row>
-                                <Form.Row>
+                                
                                     <Form.Group as={Col} id="formGridDesign">
-                                        <Form.Check label="Design" type="checkbox" name="teams" value="design" checked={user.teams.includes('design')} onChange={handleChange}/>
+                                        <Form.Check label="Design" type="checkbox" name="teams" value="design" checked={user?.teams && user?.teams.includes('design')} onChange={handleChange}/>
                                     </Form.Group>
-                                </Form.Row>
-                                <Form.Row>
+                                
                                     <Form.Group as={Col} id="formGridOthers">
-                                        <Form.Check label="Others" type="checkbox" name="teams" value="others" checked={user.teams.includes('others')} onChange={handleChange}/>
+                                        <Form.Check label="Others" type="checkbox" name="teams" value="others" checked={user?.teams && user?.teams.includes('others')} onChange={handleChange}/>
                                     </Form.Group>
                                 </Form.Row>
                             </Col>
-                        </Row>
-                        <Button variant={id ? 'info' : 'primary'} type="submit" disabled={isLoading}>
+                        </Form.Row>
+                        <Button variant={params.id ? 'outline-primary' : 'primary'} type="submit" disabled={isLoading}>
                         {isLoading ? 'Saving…' : 'Save'}
                         </Button>
                     </Form>

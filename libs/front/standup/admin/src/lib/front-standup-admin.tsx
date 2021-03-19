@@ -21,6 +21,9 @@ export function FrontStandupAdmin(props: FrontStandupAdminProps) {
         <Route exact path="/admin">
           <UsersList />
         </Route>
+        <Route exact path="/admin/user">
+          <UsersCreate />
+        </Route>
         <Route path="/admin/user/:id">
           <UsersCreate />
         </Route>

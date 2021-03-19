@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { v4 } from 'uuid';
 import { addHours } from 'date-fns';
 import * as bcrypt from 'bcrypt';
-// import { AuthService } from './../auth/auth.service';
+import { AuthService } from './../auth/auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
 // import { ResetPasswordDto } from './dto/reset-password.dto';
 // import { CreateForgotPasswordDto } from './dto/create-forgot-password.dto';
@@ -25,7 +25,7 @@ export class UsersService {
     constructor(
         @InjectModel('User') private readonly userModel: Model<User>,
         // @InjectModel('ForgotPassword') private readonly forgotPasswordModel: Model<ForgotPassword>,
-        // private readonly authService: AuthService,
+        private readonly authService: AuthService
     ) {}
 
     async findAllUsers(): Promise<any> {
@@ -39,6 +39,7 @@ export class UsersService {
             _id: user._id,
             roles: user.roles,
             teams: user.teams,
+            projects: user.projects,
             name: user.name,
             email: user.email
         };
@@ -57,29 +58,17 @@ export class UsersService {
         return user;
     }
 
-    // async verifyEmail(req: Request, verifyUuidDto: VerifyUuidDto) {
-    //     const user = await this.findByVerification(verifyUuidDto.verification);
-    //     await this.setUserAsVerified(user);
-    //     return {
-    //         fullName: user.fullName,
-    //         email: user.email,
-    //         accessToken: await this.authService.createAccessToken(user._id),
-    //         refreshToken: await this.authService.createRefreshToken(req, user._id),
-    //     };
-    // }
-
-    // async login(req: Request, loginUserDto: LoginUserDto) {
-    //     const user = await this.findUserByEmail(loginUserDto.email);
-    //     this.isUserBlocked(user);
-    //     await this.checkPassword(loginUserDto.password, user);
-    //     await this.passwordsAreMatch(user);
-    //     return {
-    //         fullName: user.fullName,
-    //         email: user.email,
-    //         accessToken: await this.authService.createAccessToken(user._id),
-    //         refreshToken: await this.authService.createRefreshToken(req, user._id),
-    //     };
-    // }
+    async login(loginUserDto: LoginUserDto) {
+        console.log(loginUserDto);
+        const user = await this.findUserByEmail(loginUserDto.email);
+        console.log(user);
+        await this.checkPassword(loginUserDto.password, user);
+        return {
+            name: user.name,
+            email: user.email,
+            token: await this.authService.createAccessToken(user._id)
+        };
+    }
 
     // async refreshAccessToken(refreshAccessTokenDto: RefreshAccessTokenDto) {
     //     const userId = await this.authService.findRefreshToken(refreshAccessTokenDto.refreshToken);
@@ -158,46 +147,23 @@ export class UsersService {
     }
 
     private async findUserByEmail(email: string): Promise<User> {
-        const user = await this.userModel.findOne({email, verified: true});
+        console.log(email);
+        const user = await this.userModel.findOne({email: email});
+        console.log(user);
         if (!user) {
           throw new NotFoundException('Wrong email or password.');
         }
         return user;
-      }
+    }
 
     private async checkPassword(attemptPass: string, user) {
         const match = await bcrypt.compare(attemptPass, user.password);
         if (!match) {
-            await this.passwordsDoNotMatch(user);
             throw new NotFoundException('Wrong email or password.');
         }
         return match;
-      }
-
-    private isUserBlocked(user) {
-        if (user.blockExpires > Date.now()) {
-            throw new ConflictException('User has been blocked try later.');
-        }
     }
 
-    private async passwordsDoNotMatch(user) {
-        user.loginAttempts += 1;
-        await user.save();
-        if (user.loginAttempts >= this.LOGIN_ATTEMPTS_TO_BLOCK) {
-            await this.blockUser(user);
-            throw new ConflictException('User blocked.');
-        }
-    }
-
-    private async blockUser(user) {
-        user.blockExpires = addHours(new Date(), this.HOURS_TO_BLOCK);
-        await user.save();
-    }
-
-    private async passwordsAreMatch(user) {
-        user.loginAttempts = 0 ;
-        await user.save();
-    }
 
     // private async saveForgotPassword(req: Request, createForgotPasswordDto: CreateForgotPasswordDto) {
     //     const forgotPassword = await this.forgotPasswordModel.create({

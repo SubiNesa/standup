@@ -29,6 +29,10 @@ export const UserSchema = new mongoose.Schema ({
     teams: {
         type: [String],
         default: [''],
+    },
+    projects: {
+        type: [String],
+        default: [''],
     }
 }, {
     versionKey: false,

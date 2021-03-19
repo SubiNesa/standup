@@ -59,7 +59,7 @@ export function UsersList(props: any) {
                                                 <td>{user.email}</td>
                                                 <td>{user?.roles && user.roles.join(', ')}</td>
                                                 <td>{user?.teams && user.teams.join(', ')}</td>
-                                                <td>
+                                                <td className="text-right">
                                                     <Button variant="outline-primary" href={'/admin/user/' + user._id}><FontAwesomeIcon icon={["fas", "edit"]} /></Button>
                                                     <Button variant="outline-danger" className="ml-2"><FontAwesomeIcon icon={["fas", "trash-alt"]} /></Button>
                                                 </td>

@@ -80,33 +80,33 @@ export function FrontStandupHome(props: FrontStandupHomeProps) {
                     <td></td>
                     {
                       dates.map((d, dIndex) => {
-                        return <td style={td} key={dIndex}>{d.day} {d.date}</td>
+                        return <td style={td} key={('d' + dIndex).toString()}>{d.day} {d.date}</td>
                       })
                     }
                   </tr>
                   {
                     state.goals.map((item, index) =>{
-                      return <tr key={index}><td>{item.user}</td>
+                      return <tr key={('item' + index).toString()}><td>{item.user}</td>
                       
                       {
                         item.data.map((goals, tdKey) => {
                           if (goals && Array.isArray(goals)) {
-                              return <td key={tdKey}>
+                              return <td key={('goals' + tdKey).toString()}>
                               {
                                 goals.map((goal, sectionId) => {
                                   if (goal && goal.ticket) {
-                                    return <section key={sectionId}>
+                                    return <section key={('goal' + sectionId).toString()}>
                                       <HomeTask goal={goal} color={item.color}/>
                                         <br/>
                                         <div style={badgeSep}></div>
                                       </section>
                                   } else {
-                                    return <section key={sectionId}><br/><div style={badgeSep}></div></section>
+                                    return <section key={('goal' + sectionId).toString()}><br/><div style={badgeSep}></div></section>
                                   }
                                 })
                               }</td>
                           }
-                          return <td key={tdKey}></td>
+                          return <td key={('goals' + tdKey).toString()}></td>
                         })
                       }
                       </tr>

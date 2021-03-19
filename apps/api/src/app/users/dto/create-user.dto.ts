@@ -36,24 +36,35 @@ export class CreateUserDto {
     // Roles
     @ApiProperty({
       example: '[Frontend, Backend]',
-      description: 'The email of the User',
-      format: 'email',
+      description: 'The roles of the User',
+      format: 'string',
       minLength: 5,
       maxLength: 255,
     })
     @IsNotEmpty()
     readonly roles: string[];
 
-    // teams
+    // Teams
     @ApiProperty({
-      example: '[Viewer, Developer]',
-      description: 'The email of the User',
-      format: 'email',
+      example: '[Developer, Admin]',
+      description: 'The teams of the User',
+      format: 'string',
       minLength: 5,
       maxLength: 255,
     })
     @IsNotEmpty()
     readonly teams: string[];
+
+    // Projects
+    @ApiProperty({
+      example: '[Cookie, Biscuit]',
+      description: 'The projects of the User',
+      format: 'string',
+      minLength: 5,
+      maxLength: 255,
+    })
+    @IsNotEmpty()
+    readonly projects: string[];
 
     // Password
     // @ApiProperty({

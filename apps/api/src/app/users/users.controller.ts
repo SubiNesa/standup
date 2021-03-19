@@ -19,7 +19,7 @@ import {
     ApiOperation,
     } from '@nestjs/swagger';
 
-@ApiTags('User')
+@ApiTags('Users')
 @Controller('users')
 // @UseGuards(RolesGuard)
 export class UsersController {
@@ -73,21 +73,13 @@ export class UsersController {
         return await this.usersService.update(params.id, createUserDto);
     }
 
-    // @Post('verify-email')
-    // @HttpCode(HttpStatus.OK)
-    // @ApiOperation({summary: 'Verify Email'})
-    // @ApiOkResponse({})
-    // async verifyEmail(@Req() req: Request, @Body() verifyUuidDto: VerifyUuidDto) {
-    //     return await this.usersService.verifyEmail(req, verifyUuidDto);
-    // }
-
-    // @Post('login')
-    // @HttpCode(HttpStatus.OK)
-    // @ApiOperation({summary: 'Login User'})
-    // @ApiOkResponse({})
-    // async login(@Req() req: Request, @Body() loginUserDto: LoginUserDto) {
-    //     return await this.usersService.login(req, loginUserDto);
-    // }
+    @Post('/login')
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({summary: 'Login User'})
+    @ApiOkResponse({})
+    async login(@Body() loginUserDto: LoginUserDto) {
+        return await this.usersService.login(loginUserDto);
+    }
 
     // @Post('refresh-access-token')
     // @HttpCode(HttpStatus.CREATED)
