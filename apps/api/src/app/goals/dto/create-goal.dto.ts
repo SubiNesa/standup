@@ -40,4 +40,13 @@ export class CreateGoalDto {
     @IsNotEmpty()
     @IsString()
     readonly blocked: boolean;
+
+    @ApiProperty({
+        example: 'user_id',
+        description: 'user id',
+        format: 'string',
+    })
+    @IsNotEmpty()
+    @IsString()
+    readonly userId: string;
 }

@@ -49,7 +49,9 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
     
     const requestOptions = {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : ''},
       body: JSON.stringify(data)
     };
     

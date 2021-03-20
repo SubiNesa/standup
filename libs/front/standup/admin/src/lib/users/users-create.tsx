@@ -21,8 +21,16 @@ export function UsersCreate(props: any) {
     });
 
     if (params?.id) {
+        const requestOptions = {
+            method: 'GET',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : ''
+            }
+        };
+
         useEffect(() => {
-            fetch(`/api/users/${params.id}`)
+            fetch(`/api/users/${params.id}`, requestOptions)
               .then((res) =>  !res.ok ? history.push('/admin/user/') : res.json())
               .then((user) => {
                 setUser({ ...user, ...user });
@@ -58,9 +66,12 @@ export function UsersCreate(props: any) {
         }
         
         const requestOptions = {
-          method: params.id ? 'PUT' : 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+            method: params.id ? 'PUT' : 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : ''
+            },
+            body: JSON.stringify(data)
         };
 
         const api = params.id ? `/api/users/${params.id}` : '/api/users';

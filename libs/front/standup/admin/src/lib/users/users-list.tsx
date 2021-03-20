@@ -14,8 +14,17 @@ export function UsersList(props: any) {
     
       useEffect(() => {
         setData({ ...data, loading: true });
-        const apiUrl = `/api/users/`;
-        fetch(apiUrl)
+
+
+        const requestOptions = {
+            method: 'GET',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : ''
+            }
+        }
+
+        fetch(`/api/users/`, requestOptions)
           .then((res) => res.json())
           .then((users) => {
             setData({ loading: false, users: users });

@@ -1,6 +1,10 @@
 import * as mongoose from 'mongoose';
 
 export const GoalSchema = new mongoose.Schema({
+    userId: {
+        type: String,
+        required: [true, 'USER_ID_IS_BLANK'],
+    },
     ticket: {
         type: String,
         required: [true, 'TICKET_IS_BLANK'],

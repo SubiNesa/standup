@@ -24,7 +24,7 @@ export class AuthService {
   }
 
   async validateUser(jwtPayload: JwtPayload): Promise<any> {
-    const user = await this.userModel.findOne({_id: jwtPayload.userId, verified: true});
+    const user = await this.userModel.findById(jwtPayload.userId);
     if (!user) {
       throw new UnauthorizedException('User not found.');
     }
@@ -34,25 +34,25 @@ export class AuthService {
   private jwtExtractor(request) {
     let token = null;
     if (request.header('x-token')) {
-    token = request.get('x-token');
-  } else if (request.headers.authorization) {
-    token = request.headers.authorization.replace('Bearer ', '').replace(' ', '');
-  } else if (request.body.token) {
-    token = request.body.token.replace(' ', '');
-  }
+        token = request.get('x-token');
+    } else if (request.headers.authorization) {
+        token = request.headers.authorization.replace('Bearer ', '').replace(' ', '');
+    } else if (request.body.token) {
+        token = request.body.token.replace(' ', '');
+    }
     if (request.query.token) {
-    token = request.body.token.replace(' ', '');
-  }
-    const cryptr = new Cryptr(process.env.ENCRYPT_JWT_SECRET);
+        token = request.body.token.replace(' ', '');
+    }
+    const cryptr = new Cryptr(process.env.ENCRYPT_JWT_SECRET || 'test');
     if (token) {
       try {
         token = cryptr.decrypt(token);
       } catch (err) {
         throw new BadRequestException('Bad request.');
       }
-  }
-    return token;
-}
+    }
+        return token;
+    }
 
   returnJwtExtractor() {
     return this.jwtExtractor;

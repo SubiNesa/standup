@@ -7,7 +7,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 // import { VerifyUuidDto } from './dto/verify-uuid.dto';
 import { UsersService } from './users.service';
-// import { AuthGuard, PassportModule } from '@nestjs/passport';
+import { AuthGuard, PassportModule } from '@nestjs/passport';
 // import { RefreshAccessTokenDto } from './dto/refresh-access-token.dto';
 // import { RolesGuard } from 'src/auth/guards/roles.guard';
 import {
@@ -24,11 +24,11 @@ import {
 // @UseGuards(RolesGuard)
 export class UsersController {
     constructor(
-        private readonly usersService: UsersService,
+        private readonly usersService: UsersService
     ) {}
 
     @Get()
-    // @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'))
     // @Roles('admin')
     @ApiBearerAuth()
     @ApiOperation({summary: 'A private route for check the auth'})
@@ -38,12 +38,13 @@ export class UsersController {
     // })
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({})
-    async findAll() {
+    async findAll(@Req() req) {
+        console.log(req);
         return await this.usersService.findAllUsers();
     }
 
     @Get('/:id')
-    // @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'))
     // @Roles('admin')
     @ApiBearerAuth()
     @ApiOperation({summary: 'A private route for check the auth'})

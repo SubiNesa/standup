@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { Goal } from './interfaces/goal.interface';
+import { User } from '../users/interfaces/users.interface';
 import { CreateGoalDto } from './dto/create-goal.dto';
 
 
@@ -11,7 +12,8 @@ import { CreateGoalDto } from './dto/create-goal.dto';
 export class GoalsService {
 
     constructor(
-        @InjectModel('Goal') private readonly goalModel: Model<Goal>,
+      @InjectModel('User') private readonly userModel: Model<User>,
+      @InjectModel('Goal') private readonly goalModel: Model<Goal>,
     ) { }
 
     colors = [
@@ -33,129 +35,81 @@ export class GoalsService {
         'F25B4C'
     ];
 
-  async createGoal(createGoalDto: CreateGoalDto): Promise<Goal> {
+  async createGoal(createGoalDto: CreateGoalDto, userId: string): Promise<Goal> {
     const goal = new this.goalModel(createGoalDto);
+    goal.userId = userId;
     await goal.save();
     return goal;
   }
   
   async getAllGoals(date): Promise<any> {
-    const data = await this.goalModel.find({}).sort({createdAt: 1});
+
+    const goals = [];
     const init = {};
 
-    for (let index = 0; index < 4; index++) {
+    const users = await this.userModel.find({});
+
+    for (let index = 0; index < 5; index++) {
       const d = new Date(date);
       d.setDate(d.getDate() + index);
       init[`${d.getFullYear()}${(d.getMonth() + 1)}${d.getDate()}`] = [];
     }
 
-    const goals = data.reduce((acc, current) => {
-      let exist: any; // if ticket already exists
-      const date = `${current.createdAt.getFullYear()}${(current.createdAt.getMonth() + 1)}${current.createdAt.getDate()}`;
-      const yesterday = `${current.createdAt.getFullYear()}${(current.createdAt.getMonth() + 1)}${current.createdAt.getDate() - 1}`;
-      
-      if (!acc[date]) {
-        acc[date] = [];
-      }
-      
-      if (acc[yesterday] && Array.isArray(acc[yesterday])) {
-        exist = acc[yesterday].find( (goal: Goal) =>  goal.ticket === current.ticket);
-      }
+    for (let index = 0; index < users.length; index++) {
+      // TODO: fetch between 2 dates
+      const data = await this.goalModel.find({userId: users[index]._id}).sort({createdAt: 1});
+      const modaledGoals = await this.modalGoals(data, init);
 
-      current.days = 1;
+      console.log('modaledGoals');
+      console.log(modaledGoals);
 
-      if (!exist) {
-        acc[date].push(current);
-      } else {
-        acc[date].push({});
+      goals.push({
+        user: users[index].name,
+        color: this.colors[Math.floor(Math.random() * this.colors.length)],
+        data: Object.values(modaledGoals)
+      });
+    }
 
-        acc[yesterday] = acc[yesterday].map((goal: Goal): Goal => {
-          if (goal.ticket === current.ticket) {
-            current.days += 1;
-            current.previous.push(goal);
-          }
-          console.log(current);
-          
-          return current;
-        });
-      }
-
-      return acc;
-    }, init);
-
-    return [{
-      user: 'Thomas',
-      color: this.colors[Math.floor(Math.random() * this.colors.length)],
-      data: Object.values(goals)
-    }];
+    return goals;
   }
 
   async getOneGoal(id: string): Promise<Goal> {
     return await this.goalModel.findById(id);
   }
 
+  private async modalGoals(data, init) {
+    return await data.reduce(async (accPromise, current) => {
+
+      let acc = await accPromise;
+      let exist: any; // if ticket already exists
+      const date = `${current.createdAt.getFullYear()}${(current.createdAt.getMonth() + 1)}${current.createdAt.getDate()}`;
+      const yesterday = `${current.createdAt.getFullYear()}${(current.createdAt.getMonth() + 1)}${current.createdAt.getDate() - 1}`;
+
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      
+      if (acc[yesterday] && Array.isArray(acc[yesterday])) {
+        exist = acc[yesterday].findIndex( (goal: Goal) =>  goal.ticket === current.ticket);
+      }
+
+      current.days = 1;
+
+      if (exist < 0) {
+        acc[date].push(current);
+      } else if (exist >= 0) {
+        acc[yesterday][exist].days += 1;
+        acc[yesterday][exist].previous.push(current)
+        for (let index = 0; index <= exist; index++) {
+          acc[date].splice(index, 0, {});
+        }
+      }
+
+      return acc;
+    }, Promise.resolve(init));
+  }
+
   // async updateGoalPut(id: string, createGoalDto: CreateGoalDto): Promise<Goal> {
   //   return await this.goalModel.updateOne({_id: id}, createGoalDto);
   // }
-  
-  getData(): any {
-    return [{
-        user: 'Thomas',
-        color: this.colors[Math.floor(Math.random() * this.colors.length)],
-        data: [
-          [
-            {
-              ticket: 'JIRA-12',
-              title: 'Something',
-              days: 2,
-              finish: 2,
-              blocked: false,
-              details: 'something something'
-            },
-            {
-              ticket: 'JIRA-16',
-              title: 'Something',
-              days: 4,
-              finish: 4,
-              blocked: false,
-              details: 'something something'
-            }
-          ],
-          [
-            {},
-            {},
-            {
-              ticket: 'JIRA-13',
-              title: 'Something',
-              days: 1,
-              finish: 1,
-              blocked: false,
-              details: 'something something'
-            }
-          ],
-          null,
-          [    
-            {},
-            {},
-            {
-              ticket: 'JIRA-14',
-              title: 'Something',
-              days: 1,
-              finish: 1,
-              blocked: false,
-              details: 'something something'
-            },
-            {
-              ticket: 'JIRA-15',
-              title: 'Something',
-              days: 1,
-              finish: 1,
-              blocked: false,
-              details: 'something something'
-            }
-          ],
-          null
-        ]
-      }];
-  }
 }

@@ -116,36 +116,6 @@ export class UsersService {
         }
     }
 
-    private buildRegistrationInfo(user): any {
-        const userRegistrationInfo = {
-            fullName: user.fullName,
-            email: user.email,
-            verified: user.verified,
-        };
-        return userRegistrationInfo;
-    }
-
-    private async findByVerification(verification: string): Promise<User> {
-        const user = await this.userModel.findOne({verification, verified: false, verificationExpires: {$gt: new Date()}});
-        if (!user) {
-            throw new BadRequestException('Bad request.');
-        }
-        return user;
-    }
-
-    private async findByEmail(email: string): Promise<User> {
-        const user = await this.userModel.findOne({email, verified: true});
-        if (!user) {
-            throw new NotFoundException('Email not found.');
-        }
-        return user;
-    }
-
-    private async setUserAsVerified(user) {
-        user.verified = true;
-        await user.save();
-    }
-
     private async findUserByEmail(email: string): Promise<User> {
         console.log(email);
         const user = await this.userModel.findOne({email: email});
