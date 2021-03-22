@@ -1,7 +1,7 @@
-import React, { CSSProperties, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import { Container, Row, Col, Button, Form } from 'react-bootstrap';
+import { Container, Row, Col, Button, Form, Alert } from 'react-bootstrap';
 
 import styles from './../front-standup-admin.module.scss';
 
@@ -9,6 +9,7 @@ export function UsersCreate(props: any) {
     const history = useHistory();
     const params: any = useParams();
 
+    const [alert, setAlert] = useState("");
     // loading
     const [isLoading, setLoading] = useState(false);
     // user
@@ -30,8 +31,8 @@ export function UsersCreate(props: any) {
         };
 
         useEffect(() => {
-            fetch(`/api/users/${params.id}`, requestOptions)
-              .then((res) =>  !res.ok ? history.push('/admin/user/') : res.json())
+            fetch(`/api/users/one/${params.id}`, requestOptions)
+              .then((res) =>  !res.ok ? history.push('/') : res.json())
               .then((user) => {
                 setUser({ ...user, ...user });
               });
@@ -64,6 +65,10 @@ export function UsersCreate(props: any) {
         if (data._id) {
             delete data._id;
         }
+
+        if (!params.id) {
+            data.password = '12345';
+        }
         
         const requestOptions = {
             method: params.id ? 'PUT' : 'POST',
@@ -74,7 +79,7 @@ export function UsersCreate(props: any) {
             body: JSON.stringify(data)
         };
 
-        const api = params.id ? `/api/users/${params.id}` : '/api/users';
+        const api = params.id ? `/api/users/one/${params.id}` : '/api/users/one';
         
         fetch(api, requestOptions)
           .then(async response => {
@@ -84,9 +89,7 @@ export function UsersCreate(props: any) {
     
               // check for error response
               if (!response.ok) {
-                  // get error message from body or default to response status
-                  const error = (data && data.message) || response.status;
-                  return Promise.reject(error);
+                setAlert(data.message);
               } else {
                 history.push("/admin");
               }
@@ -114,6 +117,13 @@ export function UsersCreate(props: any) {
             </div>
             <div>
                 <Container>
+                    {
+                        alert ? 
+                        <Row>
+                            <Alert className="w-100" variant="warning">{alert}</Alert>
+                        </Row>
+                        : <></>        
+                    }
                     <Form onSubmit={onUserSubmit}>
 
                         <Form.Row>

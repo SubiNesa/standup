@@ -17,7 +17,10 @@
     "paths": {
       "@standup/front/standup/home": ["libs/front/standup/home/src/index.ts"],
       "@standup/front/standup/goal": ["libs/front/standup/goal/src/index.ts"],
-      "@standup/front/standup/admin": ["libs/front/standup/admin/src/index.ts"]
+      "@standup/front/standup/admin": ["libs/front/standup/admin/src/index.ts"],
+      "@standup/front/standup/profile": [
+        "libs/front/standup/profile/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

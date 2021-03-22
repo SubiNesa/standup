@@ -9,5 +9,5 @@ export interface Goal extends Document {
     finish: number,
     ticket: string,
     title: string,
-    previous: any,
+    previous: any
 };

@@ -32,5 +32,5 @@ export const GoalSchema = new mongoose.Schema({
     }
 }, {
     versionKey: false,
-    timestamps: true,
+    timestamps: true
 });

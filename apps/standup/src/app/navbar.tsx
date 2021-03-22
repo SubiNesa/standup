@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { useHistory } from "react-router";
 
@@ -13,7 +13,7 @@ export interface NavbarProps {
 export function HomeNavbar(props: NavbarProps) {
   const history = useHistory();
 
-  const style = {
+  const style: CSSProperties = {
     background: 'linear-gradient(148deg, rgba(146,97,210,1) 0%, rgba(98,76,209,1) 74%)',
   }
 

@@ -15,6 +15,18 @@ export function HomeTask(props: HomeTask) {
 
 const taskRef = useRef();
 
+const displayDays = (day) => {
+    if (day === -1) {
+        return 'I do not know';
+    } else if (day === 0) {
+        return 'Today';
+    } else if (day === 1) {
+        return 'Tomorrow';
+    } else if (day > 1) {
+        return `${day} days`;
+    }
+}
+
 const useResize = (myRef) => {
     const [width, setWidth] = useState(0)
     const [height, setHeight] = useState(0)
@@ -44,7 +56,7 @@ const useResize = (myRef) => {
             <Popover.Title as="h3">{props.goal.ticket}</Popover.Title>
             <Popover.Content>
                 <Row >
-                    <Col sm={1}><FontAwesomeIcon icon={["fas", "tasks"]} /></Col>
+                    <Col sm={1}><FontAwesomeIcon icon={["fas", "bullseye"]} /></Col>
                     <Col>{props.goal.title}</Col>
                 </Row>
                 <Row >
@@ -53,13 +65,13 @@ const useResize = (myRef) => {
                 </Row>
                 <Row >
                     <Col sm={1}><FontAwesomeIcon icon={["fas", "flag-checkered"]} /></Col>
-                    <Col>{props.goal.finish}</Col>
+                    <Col>{displayDays(props.goal.finish)}</Col>
                 </Row>
                 {
                     props.goal.blocked ?
                     <Row >
                         <Col sm={1}><FontAwesomeIcon icon={["fas", "exclamation-triangle"]} /></Col>
-                        <Col>{props.goal.blocked}</Col>
+                        <Col>Blocked</Col>
                     </Row>
                     : <span></span>
                 }
@@ -67,10 +79,10 @@ const useResize = (myRef) => {
                     props.goal.previous && Array.isArray(props.goal.previous) ?
           
                         props.goal.previous.map((p, pIndex) => {
-                            return <>
+                            return <div key={pIndex}>
                                 <hr></hr>
                                 <Row >
-                                    <Col sm={1}><FontAwesomeIcon icon={["fas", "tasks"]} /></Col>
+                                    <Col sm={1}><FontAwesomeIcon icon={["fas", "bullseye"]} /></Col>
                                     <Col>{p.title}</Col>
                                 </Row>
                                 <Row >
@@ -79,9 +91,17 @@ const useResize = (myRef) => {
                                 </Row>
                                 <Row >
                                     <Col sm={1}><FontAwesomeIcon icon={["fas", "flag-checkered"]} /></Col>
-                                    <Col>{p.finish}</Col>
+                                    <Col>{displayDays(p.finish)}</Col>
                                 </Row>
-                            </>
+                                {
+                                    p.blocked ?
+                                    <Row >
+                                        <Col sm={1}><FontAwesomeIcon icon={["fas", "exclamation-triangle"]} /></Col>
+                                        <Col>Blocked</Col>
+                                    </Row>
+                                    : <span></span>
+                                }
+                            </div>
                         })
                     : <span></span>
                 }
@@ -101,13 +121,23 @@ const useResize = (myRef) => {
         };
     }
 
+    const renderBlocked = (goal) => {
+        if (goal.blocked) {
+            return <FontAwesomeIcon className="mr-2" icon={["fas", "exclamation-triangle"]} /> 
+        } 
+    }
+
     return (
         <OverlayTrigger
             placement="bottom"
             delay={{ show: 250, hide: 400 }}
             overlay={renderTooltip(props)}
             >
-            <div style={setStyle()} ref={taskRef}>{props.goal.ticket}</div>
+            <div style={setStyle()} ref={taskRef}>
+                {renderBlocked(props.goal)}
+                {props.goal.ticket}
+                <span className="float-right">{displayDays(props.goal.finish)}</span>
+            </div>
             
 
         </OverlayTrigger>              

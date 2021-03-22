@@ -9,57 +9,70 @@ import { HomeNavbar } from './navbar';
 import { FrontStandupHome } from '@standup/front/standup/home';
 import { FrontStandupGoal } from '@standup/front/standup/goal';
 import { FrontStandupAdmin } from '@standup/front/standup/admin';
+import { FrontStandupProfile } from '@standup/front/standup/profile';
 
 export function App() {
   const mainPanel = React.useRef(null);
 
   const { token, setToken } = useToken();
 
-  const ProtectedRoute = ({ component: Comp, loggedIn}) => {
-    return loggedIn ? <Comp/> : <Redirect to="/" />;
+  const ProtectedRoute = ({ component: Comp, loggedIn }) => {
+    if (loggedIn) {
+      return <Comp />;
+    }
+    localStorage.removeItem('token');
+    return <Redirect to="/" />;
   };
 
-  
   console.log(token);
 
   return (
     <Switch>
       <Route exact path="/">
-          <Login setToken={setToken} />
+        <Route path="/profile" component={FrontStandupProfile} />
+        <Login setToken={setToken} />
       </Route>
       <Route exact path="/home">
         <div className={styles.app}>
           <div className="wrapper">
             <div className="main-panel" ref={mainPanel}>
-              <HomeNavbar token={!!token}/> 
+              <HomeNavbar token={!!token} />
               <FrontStandupHome />
             </div>
           </div>
         </div>
-        
       </Route>
       <Route path="/admin">
         <div className={styles.app}>
-            <div className="wrapper">
-              <div className="main-panel" ref={mainPanel}>
-                <HomeNavbar token={!!token}/> 
-                <ProtectedRoute loggedIn={token} component={FrontStandupAdmin}/>
-              </div>
+          <div className="wrapper">
+            <div className="main-panel" ref={mainPanel}>
+              <HomeNavbar token={!!token} />
+              <ProtectedRoute loggedIn={token} component={FrontStandupAdmin} />
             </div>
+          </div>
         </div>
       </Route>
       <Route exact path="/goal">
         <div className={styles.app}>
-            <div className="wrapper">
-              <div className="main-panel" ref={mainPanel}>
-                <HomeNavbar token={!!token}/> 
-                <ProtectedRoute loggedIn={token} component={FrontStandupGoal}/>
-              </div>
+          <div className="wrapper">
+            <div className="main-panel" ref={mainPanel}>
+              <HomeNavbar token={!!token} />
+              <ProtectedRoute loggedIn={token} component={FrontStandupGoal} />
             </div>
+          </div>
+        </div>
+      </Route>
+      <Route exact path="/profile">
+        <div className={styles.app}>
+          <div className="wrapper">
+            <div className="main-panel" ref={mainPanel}>
+              <HomeNavbar token={!!token} />
+              <ProtectedRoute loggedIn={token} component={FrontStandupProfile} />
+            </div>
+          </div>
         </div>
       </Route>
     </Switch>
-
   );
 }
 

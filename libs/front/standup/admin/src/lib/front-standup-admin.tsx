@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import Switch from 'react-bootstrap/esm/Switch';
 
 import { Route } from 'react-router-dom';
@@ -10,7 +10,7 @@ import UsersCreate from './users/users-create';
 /* eslint-disable-next-line */
 export interface FrontStandupAdminProps {}
 
-const switchStyle = {
+const switchStyle: CSSProperties = {
   'paddingLeft': '0px'
  }
 

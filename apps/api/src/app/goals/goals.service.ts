@@ -17,22 +17,14 @@ export class GoalsService {
     ) { }
 
     colors = [
-        '093145',
-        '107896',
-        '829356',
-        '0C374D',
-        '1287A8',
-        '93A661',
-        '0D3D56',
-        '1496BB',
-        'A3B86C',
-        '3C6478',
-        'BCA136',
-        'C2571A',
-        'AD2A1A',
-        'F26D21',
-        'CD594A',
-        'F25B4C'
+        '9261d2',
+        '8751cf',
+        '8144d4',
+        '742fd4',
+        '7a56d1',
+        '624cd1',
+        '5238d1',
+        '3f22c9'
     ];
 
   async createGoal(createGoalDto: CreateGoalDto, userId: string): Promise<Goal> {
@@ -45,23 +37,37 @@ export class GoalsService {
   async getAllGoals(date): Promise<any> {
 
     const goals = [];
-    const init = {};
+    let init = {};
+
+    const monday = this.getMonday(date); 
+    const friday = new Date(this.getMonday(date).setDate(this.getMonday(date).getDate() + 5));
 
     const users = await this.userModel.find({});
 
-    for (let index = 0; index < 5; index++) {
-      const d = new Date(date);
-      d.setDate(d.getDate() + index);
-      init[`${d.getFullYear()}${(d.getMonth() + 1)}${d.getDate()}`] = [];
+    // create table of dates
+    const initialize = (initial, date) => {
+      for (let index = 0; index < 5; index++) {
+        const d = new Date(date);
+        d.setDate(d.getDate() + index);
+        initial[`${d.getFullYear()}${(d.getMonth() + 1)}${d.getDate()}`] = [];
+      }
+
+      return initial;
     }
 
+    // get data for each user
     for (let index = 0; index < users.length; index++) {
-      // TODO: fetch between 2 dates
-      const data = await this.goalModel.find({userId: users[index]._id}).sort({createdAt: 1});
-      const modaledGoals = await this.modalGoals(data, init);
+      const userId = users[index]._id;
+      const data = await this.goalModel.find({
+        userId: userId,
+        createdAt: {
+          $gte: `${monday.getFullYear()}-${("0" + (monday.getMonth() + 1)).slice(-2)}-${monday.getDate()}`, 
+          $lte: `${friday.getFullYear()}-${("0" + (friday.getMonth() + 1)).slice(-2)}-${friday.getDate()}`
+        }
+        
+      }).sort({createdAt: 1});
 
-      console.log('modaledGoals');
-      console.log(modaledGoals);
+      const modaledGoals = await this.modalGoals(data, initialize(init, date));
 
       goals.push({
         user: users[index].name,
@@ -77,6 +83,13 @@ export class GoalsService {
     return await this.goalModel.findById(id);
   }
 
+  /**
+   * Modal the data
+   * 
+   * @param data 
+   * @param init 
+   * @returns 
+   */
   private async modalGoals(data, init) {
     return await data.reduce(async (accPromise, current) => {
 
@@ -95,11 +108,13 @@ export class GoalsService {
 
       current.days = 1;
 
-      if (exist < 0) {
+      if (exist === undefined || exist < 0) {
         acc[date].push(current);
       } else if (exist >= 0) {
+        const tmp = { ...acc[yesterday][exist] };
+        acc[yesterday][exist] = current;
         acc[yesterday][exist].days += 1;
-        acc[yesterday][exist].previous.push(current)
+        acc[yesterday][exist].previous.push(tmp)
         for (let index = 0; index <= exist; index++) {
           acc[date].splice(index, 0, {});
         }
@@ -109,7 +124,10 @@ export class GoalsService {
     }, Promise.resolve(init));
   }
 
-  // async updateGoalPut(id: string, createGoalDto: CreateGoalDto): Promise<Goal> {
-  //   return await this.goalModel.updateOne({_id: id}, createGoalDto);
-  // }
+  private getMonday = (d) => {
+    d = new Date(d);
+    var day = d.getDay(),
+        diff = d.getDate() - day + (day == 0 ? -6:1); // adjust when day is sunday
+    return new Date(d.setDate(diff));
+  }
 }

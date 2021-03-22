@@ -216,6 +216,29 @@
           }
         }
       }
+    },
+    "front-standup-profile": {
+      "root": "libs/front/standup/profile",
+      "sourceRoot": "libs/front/standup/profile/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/front/standup/profile/**/*.{ts,tsx,js,jsx}"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/front/standup/profile"],
+          "options": {
+            "jestConfig": "libs/front/standup/profile/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   }
 }

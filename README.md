@@ -37,6 +37,14 @@ Install dependencies
     
     npm install
 
+Create .env file
+
+    MONGO_URI='mongodb://localhost/YOURMONGODBNAME'
+    JWT_SECRET='YOURJWTSECRETCHANGEIT'
+    ENCRYPT_JWT_SECRET='YOURJWTENCRIPTINGPASSCHANGEIT'
+    JWT_EXPIRATION=5d
+    GLOBAL_PREFIX='api'
+
 Start Front
 
     npm run start -- standup
@@ -45,3 +53,7 @@ Start Backend
 
     npm run start -- api
 
+
+Reference https://github.com/pejmanhadavi/real-world-example-nestjs-mongoose-jwt-auth
+
+    

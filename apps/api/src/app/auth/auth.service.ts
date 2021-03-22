@@ -15,11 +15,11 @@ export class AuthService {
   constructor(
     @InjectModel('User') private readonly userModel: Model<User>
   ) {
-    this.cryptr = new Cryptr(process.env.ENCRYPT_JWT_SECRET || 'test');
+    this.cryptr = new Cryptr(process.env.ENCRYPT_JWT_SECRET);
   }
 
   async createAccessToken(userId: string) {
-    const accessToken = sign({userId}, process.env.JWT_SECRET || 'test' , { expiresIn: process.env.JWT_EXPIRATION || '5d'});
+    const accessToken = sign({userId}, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION || '5d'});
     return this.encryptText(accessToken);
   }
 
@@ -43,7 +43,7 @@ export class AuthService {
     if (request.query.token) {
         token = request.body.token.replace(' ', '');
     }
-    const cryptr = new Cryptr(process.env.ENCRYPT_JWT_SECRET || 'test');
+    const cryptr = new Cryptr(process.env.ENCRYPT_JWT_SECRET);
     if (token) {
       try {
         token = cryptr.decrypt(token);

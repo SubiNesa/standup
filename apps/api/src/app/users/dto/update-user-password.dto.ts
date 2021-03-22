@@ -1,7 +1,7 @@
 import { IsNotEmpty, MinLength, MaxLength, IsEmail, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateUserDto {
+export class UpdateUserPasswordDto {
 
     // Name
     @ApiProperty({
@@ -9,7 +9,7 @@ export class CreateUserDto {
       description: 'The name of the User',
       format: 'string',
       minLength: 6,
-      maxLength: 255,
+      maxLength: 255
     })
     @IsNotEmpty()
     @IsString()
@@ -24,7 +24,7 @@ export class CreateUserDto {
       format: 'email',
       uniqueItems: true,
       minLength: 5,
-      maxLength: 255,
+      maxLength: 255
     })
     @IsNotEmpty()
     @IsString()
@@ -33,36 +33,31 @@ export class CreateUserDto {
     @IsEmail()
     readonly email: string;
 
-    // Roles
+    // Password
     @ApiProperty({
-      example: '[Frontend, Backend]',
-      description: 'The roles of the User',
+      example: 'new password',
+      description: 'The new password of the User',
       format: 'string',
       minLength: 5,
-      maxLength: 255
+      maxLength: 1024
     })
     @IsNotEmpty()
-    readonly roles: string[];
+    @IsString()
+    @MinLength(5)
+    @MaxLength(1024)    
+    readonly password: string;
 
-    // Teams
+    // Current
     @ApiProperty({
-      example: '[Developer, Admin]',
-      description: 'The teams of the User',
+      example: 'Current password',
+      description: 'The current password of the User',
       format: 'string',
       minLength: 5,
-      maxLength: 255
+      maxLength: 1024
     })
     @IsNotEmpty()
-    readonly teams: string[];
-
-    // Projects
-    @ApiProperty({
-      example: '[Cookie, Biscuit]',
-      description: 'The projects of the User',
-      format: 'string',
-      minLength: 5,
-      maxLength: 255
-    })
-    @IsNotEmpty()
-    readonly projects: string[];
-  }
+    @IsString()
+    @MinLength(5)
+    @MaxLength(1024)
+    readonly current: string;
+}

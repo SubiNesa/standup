@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { CSSProperties, useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 
 export function Login({ setToken }) {
 
-    const pageStyle = {
+    const pageStyle: CSSProperties = {
         height: '100%',
         float: 'left',
         backgroundImage: 'url(assets/img/geneva.jpg)',
         backgroundSize: 'cover'
     }
 
-    const leftLay = {
+    const leftLay: CSSProperties = {
         backgroundColor: 'rgba(135, 63, 217, 0.73)',
         position: 'absolute',
         width: '100%',
@@ -18,16 +18,18 @@ export function Login({ setToken }) {
         padding: '0px'
     }
 
-    const leftTitle = {
+    const leftTitle: CSSProperties = {
         color: 'white',
         height: '100%',
         marginLeft: '20%',
         textShadow: '1px 1px black'
     }
 
-    const rightPage = {
+    const rightPage: CSSProperties = {
         backgroundColor: 'rgba(255,255,255, 0.92)'
     }
+
+    const [invalid, setInvalid] = useState(false);
 
     const [user, setLogin] = useState({
         email: '',
@@ -42,7 +44,16 @@ export function Login({ setToken }) {
           },
           body: JSON.stringify(credentials)
         })
-        .then(data => data.json())
+        .then(async response => {
+            const data = await response.json();
+
+            // check for error response
+            if (!response.ok) {
+                setInvalid(true);
+            }
+
+            return data;
+        });
     }
 
     const handleSubmit = async e => {
@@ -77,11 +88,14 @@ export function Login({ setToken }) {
                     <div className="d-table-cell align-middle">
                         <Form onSubmit={handleSubmit}>
                             <Form.Group controlId="formBasicEmail">
-                                <Form.Control type="email" placeholder="Email" name="email" onChange={handleChange}/>
+                                <Form.Control type="email" placeholder="Email" name="email" onChange={handleChange} isInvalid={invalid}/>
                             </Form.Group>
 
                             <Form.Group controlId="formBasicPassword">
-                                <Form.Control type="password" placeholder="Password" name="password" onChange={handleChange}/>
+                                <Form.Control type="password" placeholder="Password" name="password" onChange={handleChange} isInvalid={invalid}/>
+                                <Form.Control.Feedback type="invalid">
+                                    Invalid credentials!
+                                </Form.Control.Feedback>
                             </Form.Group>
 
                             <Button variant="secondary" type="submit">

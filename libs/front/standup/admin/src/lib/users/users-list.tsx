@@ -2,11 +2,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 
 import { Container, Row, Col, Table, Button  } from 'react-bootstrap';
+import { useHistory } from 'react-router';
 
 import styles from './../front-standup-admin.module.scss';
 
 export function UsersList(props: any) {
-
+    const history = useHistory();
     const [data, setData] = useState({
         loading: false,
         users: [],
@@ -25,7 +26,7 @@ export function UsersList(props: any) {
         }
 
         fetch(`/api/users/`, requestOptions)
-          .then((res) => res.json())
+          .then((res) => !res.ok ? history.push('/') : res.json())
           .then((users) => {
             setData({ loading: false, users: users });
           });
@@ -57,6 +58,7 @@ export function UsersList(props: any) {
                                         <th>Email</th>
                                         <th>Roles</th>
                                         <th>Teams</th>
+                                        <th>Projects</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -68,9 +70,10 @@ export function UsersList(props: any) {
                                                 <td>{user.email}</td>
                                                 <td>{user?.roles && user.roles.join(', ')}</td>
                                                 <td>{user?.teams && user.teams.join(', ')}</td>
+                                                <td>{user?.projects && user.projects.join(', ')}</td>
                                                 <td className="text-right">
                                                     <Button variant="outline-primary" href={'/admin/user/' + user._id}><FontAwesomeIcon icon={["fas", "edit"]} /></Button>
-                                                    <Button variant="outline-danger" className="ml-2"><FontAwesomeIcon icon={["fas", "trash-alt"]} /></Button>
+                                                    {/* <Button variant="outline-danger" className="ml-2"><FontAwesomeIcon icon={["fas", "trash-alt"]} /></Button> */}
                                                 </td>
                                             </tr>
                                         })

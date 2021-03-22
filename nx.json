@@ -21,6 +21,7 @@
     "front-standup-home": { "tags": [] },
     "front-standup-goal": { "tags": [] },
     "api": { "tags": [] },
-    "front-standup-admin": { "tags": [] }
+    "front-standup-admin": { "tags": [] },
+    "front-standup-profile": { "tags": [] }
   }
 }

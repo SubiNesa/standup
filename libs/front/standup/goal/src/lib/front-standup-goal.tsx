@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 
 import styles from  './front-standup-goal.module.scss';
@@ -13,6 +14,8 @@ export interface FrontStandupGoalProps {
 }
 
 export function FrontStandupGoal(props: FrontStandupGoalProps) {
+
+  const history = useHistory();
 
   const state = {
     goal: {
@@ -63,12 +66,12 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
 
           // check for error response
           if (!response.ok) {
-              // get error message from body or default to response status
               const error = (data && data.message) || response.status;
-              return Promise.reject(error);
+              console.log(error);
+          } else {
+            history.push("/home");
           }
 
-          // this.setState({ postId: data.id })
       })
       .catch(error => {
           setLoading(false);

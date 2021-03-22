@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import * as validator from 'validator';
 import * as bcrypt from 'bcrypt';
 
 export const UserSchema = new mongoose.Schema ({
@@ -7,32 +6,32 @@ export const UserSchema = new mongoose.Schema ({
         type: String,
         minlength: 6,
         maxlength: 255,
-        required: [true, 'NAME_IS_BLANK'],
+        required: [true, 'NAME_IS_BLANK']
     },
     email: {
         type: String,
         lowercase: true,
         maxlength: 255,
         minlength: 6,
-        required: [true, 'EMAIL_IS_BLANK'],
+        required: [true, 'EMAIL_IS_BLANK']
     },
     password: {
         type: String,
         minlength: 5,
         maxlength: 1024,
-        required: [true, 'PASSWORD_IS_BLANK'],
+        required: [true, 'PASSWORD_IS_BLANK']
     },
     roles: {
         type: [String],
-        default: [''],
+        default: ['']
     },
     teams: {
         type: [String],
-        default: [''],
+        default: ['']
     },
     projects: {
         type: [String],
-        default: [''],
+        default: ['']
     }
 }, {
     versionKey: false,

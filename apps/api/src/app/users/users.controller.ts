@@ -1,27 +1,22 @@
-import { Controller, Get, Post, Put, Body, UseGuards, Req, Param, HttpCode, HttpStatus } from '@nestjs/common';
-import { Request } from 'express';
-// import { Roles } from './../auth/decorators/roles.decorator';
-// import { ResetPasswordDto } from './dto/reset-password.dto';
-// import { CreateForgotPasswordDto } from './dto/create-forgot-password.dto';
+import { Controller, Get, Post, Put, Body, UseGuards, Req, Param, HttpCode, HttpStatus, BadRequestException } from '@nestjs/common';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { LoginUserDto } from './dto/login-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-// import { VerifyUuidDto } from './dto/verify-uuid.dto';
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UsersService } from './users.service';
 import { AuthGuard, PassportModule } from '@nestjs/passport';
-// import { RefreshAccessTokenDto } from './dto/refresh-access-token.dto';
-// import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import {
     ApiCreatedResponse,
     ApiOkResponse,
     ApiTags,
     ApiBearerAuth,
-    // ApiImplicitHeader,
     ApiOperation,
     } from '@nestjs/swagger';
 
 @ApiTags('Users')
 @Controller('users')
-// @UseGuards(RolesGuard)
+@UseGuards(RolesGuard)
 export class UsersController {
     constructor(
         private readonly usersService: UsersService
@@ -29,52 +24,49 @@ export class UsersController {
 
     @Get()
     @UseGuards(AuthGuard('jwt'))
-    // @Roles('admin')
+    @Roles('admin')
     @ApiBearerAuth()
-    @ApiOperation({summary: 'A private route for check the auth'})
-    // @ApiImplicitHeader({
-    //     name: 'Bearer',
-    //     description: 'the token we need for auth.'
-    // })
+    @ApiOperation({summary: 'Get all users'})
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({})
-    async findAll(@Req() req) {
-        console.log(req);
+    async findAll() {
         return await this.usersService.findAllUsers();
     }
 
-    @Get('/:id')
+    @Get('/one/:id')
     @UseGuards(AuthGuard('jwt'))
-    // @Roles('admin')
+    @Roles('admin')
     @ApiBearerAuth()
-    @ApiOperation({summary: 'A private route for check the auth'})
-    // @ApiImplicitHeader({
-    //     name: 'Bearer',
-    //     description: 'the token we need for auth.'
-    // })
+    @ApiOperation({summary: 'Get one user'})
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({})
     async findOne(@Param() params) {
         return await this.usersService.findOneUser(params.id);
     }
 
-    @Post()
+    @Post('one')
+    @UseGuards(AuthGuard('jwt'))
+    @Roles('admin')
+    @ApiBearerAuth()
+    @ApiOperation({summary: 'Save new user'})
     @HttpCode(HttpStatus.CREATED)
-    @ApiOperation({summary: 'Create user'})
     @ApiCreatedResponse({})
     async register(@Body() createUserDto: CreateUserDto) {
         return await this.usersService.create(createUserDto);
     }
 
-    @Put('/:id')
-    @HttpCode(HttpStatus.CREATED)
+    @Put('/one/:id')
+    @UseGuards(AuthGuard('jwt'))
+    @Roles('admin')
+    @ApiBearerAuth()
     @ApiOperation({summary: 'Update user'})
+    @HttpCode(HttpStatus.CREATED)
     @ApiCreatedResponse({})
     async update(@Param() params, @Body() createUserDto: CreateUserDto) {
         return await this.usersService.update(params.id, createUserDto);
     }
 
-    @Post('/login')
+    @Post('login')
     @HttpCode(HttpStatus.OK)
     @ApiOperation({summary: 'Login User'})
     @ApiOkResponse({})
@@ -82,40 +74,26 @@ export class UsersController {
         return await this.usersService.login(loginUserDto);
     }
 
-    // @Post('refresh-access-token')
-    // @HttpCode(HttpStatus.CREATED)
-    // @ApiOperation({summary: 'Refresh Access Token with refresh token'})
-    // @ApiCreatedResponse({})
-    // async refreshAccessToken(@Body() refreshAccessTokenDto: RefreshAccessTokenDto) {
-    //     return await this.usersService.refreshAccessToken(refreshAccessTokenDto);
-    // }
+    @Get('/me')
+    @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
+    @ApiOperation({summary: 'Get current user'})
+    @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({})
+    async findConnectedUser(@Req() req) {
+        return req.user;
+    }
 
-    // @Post('forgot-password')
-    // @HttpCode(HttpStatus.OK)
-    // @ApiOperation({summary: 'Forgot password'})
-    // @ApiOkResponse({})
-    // async forgotPassword(@Req() req: Request, @Body() createForgotPasswordDto: CreateForgotPasswordDto) {
-    //     return await this.usersService.forgotPassword(req, createForgotPasswordDto);
-    // }
-
-    // @Post('forgot-password-verify')
-    // @HttpCode(HttpStatus.OK)
-    // @ApiOperation({summary: 'Verfiy forget password code'})
-    // @ApiOkResponse({})
-    // async forgotPasswordVerify(@Req() req: Request, @Body() verifyUuidDto: VerifyUuidDto) {
-    //     return await this.usersService.forgotPasswordVerify(req, verifyUuidDto);
-    // }
-
-    // @Post('reset-password')
-    // @HttpCode(HttpStatus.OK)
-    // @ApiOperation({summary: 'Reset password after verify reset password',})
-    // @ApiBearerAuth()
-    // @ApiImplicitHeader({
-    //     name: 'Bearer',
-    //     description: 'the token we need for auth.'
-    // })
-    // @ApiOkResponse({})
-    // async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
-    //     return await this.usersService.resetPassword(resetPasswordDto);
-    // }
+    @Put('me')
+    @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
+    @ApiOperation({summary: 'Update current user'})
+    @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({})
+    async updateConnectedUser(@Req() req, @Body() updateUserPasswordDto: UpdateUserPasswordDto) {
+        if (req.user.email !== updateUserPasswordDto.email) {
+            throw new BadRequestException('Wrong user.');
+        }
+        return await this.usersService.updatePassword(updateUserPasswordDto);
+    }
 }
