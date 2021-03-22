@@ -4,7 +4,7 @@ import styles from './app.module.scss';
 import { Route, Redirect, Switch } from 'react-router-dom';
 
 import useToken from './token';
-import Login from './Login';
+import Login from './login';
 import { HomeNavbar } from './navbar';
 import { FrontStandupHome } from '@standup/front/standup/home';
 import { FrontStandupGoal } from '@standup/front/standup/goal';
