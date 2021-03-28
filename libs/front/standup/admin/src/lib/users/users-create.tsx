@@ -5,6 +5,8 @@ import { Container, Row, Col, Button, Form, Alert } from 'react-bootstrap';
 
 import styles from './../front-standup-admin.module.scss';
 
+import { environment } from '../../../../../../../apps/standup/src/environments/environment';
+
 export function UsersCreate(props: any) {
     const history = useHistory();
     const params: any = useParams();
@@ -31,8 +33,8 @@ export function UsersCreate(props: any) {
         };
 
         useEffect(() => {
-            fetch(`/api/users/one/${params.id}`, requestOptions)
-              .then((res) =>  !res.ok ? history.push('/') : res.json())
+            fetch(`${environment.api}users/one/${params.id}`, requestOptions)
+              .then((res) =>  !res.ok ? history.push(`${environment.path}`) : res.json())
               .then((user) => {
                 setUser({ ...user, ...user });
               });
@@ -79,7 +81,7 @@ export function UsersCreate(props: any) {
             body: JSON.stringify(data)
         };
 
-        const api = params.id ? `/api/users/one/${params.id}` : '/api/users/one';
+        const api = params.id ? `${environment.api}users/one/${params.id}` : `${environment.api}users/one`;
         
         fetch(api, requestOptions)
           .then(async response => {
@@ -91,7 +93,7 @@ export function UsersCreate(props: any) {
               if (!response.ok) {
                 setAlert(data.message);
               } else {
-                history.push("/admin");
+                history.push(`${environment.path}admin`);
               }
           })
           .catch(error => {
@@ -102,7 +104,6 @@ export function UsersCreate(props: any) {
 
     const onUserSubmit = (event) => {
         event.preventDefault();
-        console.log(user);
         saveUser(user);
     }
 

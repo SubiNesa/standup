@@ -6,6 +6,8 @@ import { useHistory } from 'react-router';
 
 import styles from './../front-standup-admin.module.scss';
 
+import { environment } from '../../../../../../../apps/standup/src/environments/environment';
+
 export function UsersList(props: any) {
     const history = useHistory();
     const [data, setData] = useState({
@@ -25,8 +27,8 @@ export function UsersList(props: any) {
             }
         }
 
-        fetch(`/api/users/`, requestOptions)
-          .then((res) => !res.ok ? history.push('/') : res.json())
+        fetch(`${environment.api}users/`, requestOptions)
+          .then((res) => !res.ok ? history.push(`${environment.path}`) : res.json())
           .then((users) => {
             setData({ loading: false, users: users });
           });

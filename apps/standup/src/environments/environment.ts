@@ -3,5 +3,6 @@
 
 export const environment = {
   production: false,
-  path: '/'
+  path: '/',
+  api: '/api/'
 };

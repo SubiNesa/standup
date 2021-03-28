@@ -1,6 +1,8 @@
 import React, { CSSProperties, useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 
+import { environment } from '../environments/environment';
+
 export function Login({ setToken }) {
 
     const pageStyle: CSSProperties = {
@@ -37,7 +39,7 @@ export function Login({ setToken }) {
     });
 
     async function loginUser(credentials) {
-        return fetch('/api/users/login', {
+        return fetch(`${environment.api}users/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

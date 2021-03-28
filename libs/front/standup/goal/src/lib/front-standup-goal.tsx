@@ -4,6 +4,9 @@ import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 
 import styles from  './front-standup-goal.module.scss';
 
+import { environment } from '../../../../../../apps/standup/src/environments/environment';
+
+
 /* eslint-disable-next-line */
 export interface FrontStandupGoalProps {
   ticket: any;
@@ -58,7 +61,7 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
       body: JSON.stringify(data)
     };
     
-    fetch('/api/goals', requestOptions)
+    fetch(`${environment.api}goals`, requestOptions)
       .then(async response => {
           const data = await response.json();
 
@@ -69,7 +72,7 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
               const error = (data && data.message) || response.status;
               console.log(error);
           } else {
-            history.push("/home");
+            history.push(`${environment.path}home`);
           }
 
       })

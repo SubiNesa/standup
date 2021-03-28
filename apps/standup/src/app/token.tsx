@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router';
 
+import { environment } from '../environments/environment';
+
 export default function useToken() {
     const history = useHistory();
 
@@ -16,7 +18,7 @@ export default function useToken() {
 
           localStorage.setItem('token', JSON.stringify(token));
           setToken(token);
-          history.push("/home");
+          history.push(`${environment.path}home`);
         }
   };
 

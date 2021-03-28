@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  path: '/standup/'
+  path: '/standup/',
+  api: '/standupapi/'
 };

@@ -10,6 +10,8 @@ import HomeTask from './task/task';
 /* eslint-disable-next-line */
 export interface FrontStandupHomeProps {}
 
+import { environment } from '../../../../../../apps/standup/src/environments/environment';
+
 export function FrontStandupHome(props: FrontStandupHomeProps) {
   
   const dates = [];
@@ -24,7 +26,6 @@ export function FrontStandupHome(props: FrontStandupHomeProps) {
 
   // Create table from monday to friday
   const buildWeekTable = (date = new Date()) => {
-    console.log('buildWeekTable', date);
     for (let index = 0; index < 5; index++) {
       const d = new Date(getMonday(date));
       d.setDate(d.getDate() + index);
@@ -42,7 +43,7 @@ export function FrontStandupHome(props: FrontStandupHomeProps) {
 
   useEffect(() => {
     setStandUp({ ...state, loading: true });
-    const apiUrl = `/api/goals/${state.monday.getFullYear()}-${(state.monday.getMonth() + 1)}-${state.monday.getDate()}`;
+    const apiUrl = `${environment.api}goals/${state.monday.getFullYear()}-${(state.monday.getMonth() + 1)}-${state.monday.getDate()}`;
     fetch(apiUrl)
       .then((res) => res.json())
       .then((goals) => {

@@ -7,6 +7,8 @@ import styles from './front-standup-profile.module.scss';
 /* eslint-disable-next-line */
 export interface FrontStandupProfileProps {}
 
+import { environment } from '../../../../../../apps/standup/src/environments/environment';
+
 export function FrontStandupProfile(props: FrontStandupProfileProps) {
     const history = useHistory();
     const params: any = useParams();
@@ -31,8 +33,8 @@ export function FrontStandupProfile(props: FrontStandupProfileProps) {
     };
 
     useEffect(() => {
-        fetch(`/api/users/me`, requestOptions)
-          .then((res) =>  !res.ok ? history.push('/') : res.json())
+        fetch(`${environment.api}users/me`, requestOptions)
+          .then((res) =>  !res.ok ? history.push(`${environment.path}`) : res.json())
           .then((user) => {
             setUser({ ...user, ...user });
           });
@@ -50,8 +52,6 @@ export function FrontStandupProfile(props: FrontStandupProfileProps) {
         if (event.target.name !== 'confirm') {
             setUser({...user, [event.target.name]: event.target.value });
         }
-
-        console.log(invalidPassword);
     }
 
     const saveUser = (data) => {
@@ -66,7 +66,7 @@ export function FrontStandupProfile(props: FrontStandupProfileProps) {
             body: JSON.stringify(data)
         };
         
-        fetch(`/api/users/me`, requestOptions)
+        fetch(`${environment.api}users/me`, requestOptions)
           .then(async response => {
               const data = await response.json();
     
@@ -78,7 +78,7 @@ export function FrontStandupProfile(props: FrontStandupProfileProps) {
                   const error = (data && data.message) || response.status;
                   return Promise.reject(error);
               } else {
-                history.push("/home");
+                history.push(`${environment.path}home`);
               }
           })
           .catch(error => {
@@ -89,7 +89,6 @@ export function FrontStandupProfile(props: FrontStandupProfileProps) {
 
     const onUserSubmit = (event) => {
         event.preventDefault();
-        console.log(user);
         saveUser(user);
     }
 

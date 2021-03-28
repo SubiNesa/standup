@@ -26,8 +26,6 @@ export function App() {
     return <Redirect to={`${environment.path}`} />;
   };
 
-  console.log(token);
-
   return (
     <Switch>
       <Route exact path={`${environment.path}`}>
