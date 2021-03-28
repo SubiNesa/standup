@@ -3,6 +3,8 @@ import styles from './app.module.scss';
 
 import { Route, Redirect, Switch } from 'react-router-dom';
 
+import { environment } from '../environments/environment';
+
 import useToken from './token';
 import Login from './login';
 import { HomeNavbar } from './navbar';
@@ -21,18 +23,18 @@ export function App() {
       return <Comp />;
     }
     localStorage.removeItem('token');
-    return <Redirect to="/" />;
+    return <Redirect to={`${environment.path}`} />;
   };
 
   console.log(token);
 
   return (
     <Switch>
-      <Route exact path="/">
-        <Route path="/profile" component={FrontStandupProfile} />
+      <Route exact path={`${environment.path}`}>
+        <Route path={`${environment.path}profile`} component={FrontStandupProfile} />
         <Login setToken={setToken} />
       </Route>
-      <Route exact path="/home">
+      <Route exact path={`${environment.path}home`}>
         <div className={styles.app}>
           <div className="wrapper">
             <div className="main-panel" ref={mainPanel}>
@@ -42,7 +44,7 @@ export function App() {
           </div>
         </div>
       </Route>
-      <Route path="/admin">
+      <Route path={`${environment.path}admin`}>
         <div className={styles.app}>
           <div className="wrapper">
             <div className="main-panel" ref={mainPanel}>
@@ -52,7 +54,7 @@ export function App() {
           </div>
         </div>
       </Route>
-      <Route exact path="/goal">
+      <Route exact path={`${environment.path}goal`}>
         <div className={styles.app}>
           <div className="wrapper">
             <div className="main-panel" ref={mainPanel}>
@@ -62,7 +64,7 @@ export function App() {
           </div>
         </div>
       </Route>
-      <Route exact path="/profile">
+      <Route exact path={`${environment.path}profile`}>
         <div className={styles.app}>
           <div className="wrapper">
             <div className="main-panel" ref={mainPanel}>

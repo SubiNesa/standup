@@ -3,9 +3,10 @@ import Switch from 'react-bootstrap/esm/Switch';
 
 import { Route } from 'react-router-dom';
 
-
 import UsersList from './users/users-list';
 import UsersCreate from './users/users-create';
+
+import { environment } from '../../../../../../apps/standup/src/environments/environment';
 
 /* eslint-disable-next-line */
 export interface FrontStandupAdminProps {}
@@ -18,13 +19,13 @@ export function FrontStandupAdmin(props: FrontStandupAdminProps) {
   return (
     <div>
       <Switch style={switchStyle} > 
-        <Route exact path="/admin">
+        <Route exact path={`${environment.path}admin`}>
           <UsersList />
         </Route>
-        <Route exact path="/admin/user">
+        <Route exact path={`${environment.path}admin/user`}>
           <UsersCreate />
         </Route>
-        <Route path="/admin/user/:id">
+        <Route path={`${environment.path}admin/user/:id`}>
           <UsersCreate />
         </Route>
         <Route>

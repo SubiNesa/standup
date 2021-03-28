@@ -7,9 +7,8 @@ export interface NavbarProps {
   token: Boolean;
 }
 
+import { environment } from '../environments/environment';
 
-//rgb(98 76 209)
-// rgb(146 97 210)
 export function HomeNavbar(props: NavbarProps) {
   const history = useHistory();
 
@@ -19,7 +18,7 @@ export function HomeNavbar(props: NavbarProps) {
 
   const onClickLogout = () => {
     localStorage.clear();
-    history.push('/')
+    history.push(`${environment.path}`)
   }
   return (
     <Navbar collapseOnSelect expand="lg" variant="dark" style={style}>
@@ -27,22 +26,22 @@ export function HomeNavbar(props: NavbarProps) {
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="mr-auto">
-          <Nav.Link href="/home">Home</Nav.Link>
+          <Nav.Link href={`${environment.path}home`}>Home</Nav.Link>
           {
-              props.token ? <Nav.Link href="/goal">Create</Nav.Link> : ''
+              props.token ? <Nav.Link href={`${environment.path}goal`}>Create</Nav.Link> : ''
           }
         </Nav>
         <Nav>
           {
               props.token ? 
               <NavDropdown title="Account" id="collasible-nav-dropdown" alignRight>
-                <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
-                <NavDropdown.Item href="/admin">Admin</NavDropdown.Item>
+                <NavDropdown.Item href={`${environment.path}profile`}>Profile</NavDropdown.Item>
+                <NavDropdown.Item href={`${environment.path}admin`}>Admin</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={onClickLogout}>Logout</NavDropdown.Item>
               </NavDropdown>
               :
-              <Nav.Link href="/">Login</Nav.Link>
+              <Nav.Link href={`${environment.path}`}>Login</Nav.Link>
           }
         </Nav>
       </Navbar.Collapse>
