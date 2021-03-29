@@ -7,9 +7,12 @@ import { Goal } from './interfaces/goal.interface';
 import { User } from '../users/interfaces/users.interface';
 import { CreateGoalDto } from './dto/create-goal.dto';
 
+import UtilsDates from '../../../../../libs/utils/dates';
 
 @Injectable()
 export class GoalsService {
+
+    utilsDates = new UtilsDates();
 
     constructor(
       @InjectModel('User') private readonly userModel: Model<User>,
@@ -39,17 +42,15 @@ export class GoalsService {
     const goals = [];
     let init = {};
 
-    const monday = this.getMonday(date); 
-    const friday = new Date(this.getMonday(date).setDate(this.getMonday(date).getDate() + 5));
+    const monday = this.utilsDates.getMonday(date); 
+    const friday = new Date(this.utilsDates.getMonday(date).setDate(this.utilsDates.getMonday(date).getDate() + 5));
 
     const users = await this.userModel.find({});
 
     // create table of dates
     const initialize = (initial, date) => {
       for (let index = 0; index < 5; index++) {
-        const d = new Date(date);
-        d.setDate(d.getDate() + index);
-        initial[`${d.getFullYear()}${(d.getMonth() + 1)}${d.getDate()}`] = [];
+        initial[this.utilsDates.getFormatDate(date, null, index)] = [];
       }
 
       return initial;
@@ -61,8 +62,8 @@ export class GoalsService {
       const data = await this.goalModel.find({
         userId: userId,
         createdAt: {
-          $gte: `${monday.getFullYear()}-${("0" + (monday.getMonth() + 1)).slice(-2)}-${monday.getDate()}`, 
-          $lte: `${friday.getFullYear()}-${("0" + (friday.getMonth() + 1)).slice(-2)}-${friday.getDate()}`
+          $gte: this.utilsDates.getFormatDate(monday, '-'), 
+          $lte: this.utilsDates.getFormatDate(friday, '-')
         }
         
       }).sort({createdAt: 1});
@@ -95,8 +96,8 @@ export class GoalsService {
 
       let acc = await accPromise;
       let exist: any; // if ticket already exists
-      const date = `${current.createdAt.getFullYear()}${(current.createdAt.getMonth() + 1)}${current.createdAt.getDate()}`;
-      const yesterday = `${current.createdAt.getFullYear()}${(current.createdAt.getMonth() + 1)}${current.createdAt.getDate() - 1}`;
+      const date = this.utilsDates.getFormatDate(current.createdAt);
+      const yesterday = this.utilsDates.getFormatDate(current.createdAt, null, -1);
 
       if (!acc[date]) {
         acc[date] = [];
@@ -122,12 +123,5 @@ export class GoalsService {
 
       return acc;
     }, Promise.resolve(init));
-  }
-
-  private getMonday = (d) => {
-    d = new Date(d);
-    var day = d.getDay(),
-        diff = d.getDate() - day + (day == 0 ? -6:1); // adjust when day is sunday
-    return new Date(d.setDate(diff));
   }
 }

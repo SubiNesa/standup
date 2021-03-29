@@ -6,6 +6,7 @@ import { Container, Row, Col, Table, Button, Spinner } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import HomeTask from './task/task';
+import UtilsDates from '../../../../../utils/dates';
 
 /* eslint-disable-next-line */
 export interface FrontStandupHomeProps {}
@@ -13,21 +14,16 @@ export interface FrontStandupHomeProps {}
 import { environment } from '../../../../../../apps/standup/src/environments/environment';
 
 export function FrontStandupHome(props: FrontStandupHomeProps) {
+
+  const utilsDates = new UtilsDates();
   
   const dates = [];
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
-  const getMonday = (d) => {
-    d = new Date(d);
-    var day = d.getDay(),
-        diff = d.getDate() - day + (day == 0 ? -6:1); // adjust when day is sunday
-    return new Date(d.setDate(diff));
-  }
-
   // Create table from monday to friday
   const buildWeekTable = (date = new Date()) => {
     for (let index = 0; index < 5; index++) {
-      const d = new Date(getMonday(date));
+      const d = new Date(utilsDates.getMonday(date));
       d.setDate(d.getDate() + index);
       dates.push({ day: days[index], date: `${d.getDate()}.${(d.getMonth() + 1)}`});
     }
@@ -35,7 +31,7 @@ export function FrontStandupHome(props: FrontStandupHomeProps) {
   
   const [state, setStandUp] = useState({
     loading: false,
-    monday: getMonday(new Date()),
+    monday: utilsDates.getMonday(new Date()),
     goals: [],
   });
   
@@ -43,7 +39,7 @@ export function FrontStandupHome(props: FrontStandupHomeProps) {
 
   useEffect(() => {
     setStandUp({ ...state, loading: true });
-    const apiUrl = `${environment.api}goals/${state.monday.getFullYear()}-${(state.monday.getMonth() + 1)}-${state.monday.getDate()}`;
+    const apiUrl = `${environment.api}goals/${utilsDates.getFormatDate(state.monday, '-')}`;
     fetch(apiUrl)
       .then((res) => res.json())
       .then((goals) => {
@@ -52,7 +48,7 @@ export function FrontStandupHome(props: FrontStandupHomeProps) {
   }, [state.monday]);
 
   const onChangeDates = (days) => {
-    const monday = getMonday(state.monday);
+    const monday = utilsDates.getMonday(state.monday);
     const date = new Date(monday.setDate(monday.getDate() + days))
     setStandUp({...state,  ...{ monday: date, goals: [] }});
   }
