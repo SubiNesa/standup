@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import { Container, Row, Col, Button, Form, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Button, Form, Alert, Modal } from 'react-bootstrap';
 
 import styles from './../front-standup-admin.module.scss';
 
@@ -12,12 +12,18 @@ export function UsersCreate(props: any) {
     const params: any = useParams();
 
     const [alert, setAlert] = useState("");
+    const [userDeleteData, setUserDeleteText] = useState({
+        text: ''
+    });
+    //modal
+    const [modalShow, setDeleteModalShow] = useState(false);
     // loading
     const [isLoading, setLoading] = useState(false);
     // user
     const [user, setUser] = useState({
         name: '',
         email: '',
+        deleted: true,
         roles: [],
         teams: [],
         projects: []
@@ -61,6 +67,12 @@ export function UsersCreate(props: any) {
         }
     }
 
+    const onUserSubmit = (event) => {
+        event.preventDefault();
+        console.log(userDeleteData);
+        saveUser(user);
+    }
+
     const saveUser = (data) => {
         setLoading(true);
 
@@ -81,7 +93,11 @@ export function UsersCreate(props: any) {
             body: JSON.stringify(data)
         };
 
-        const api = params.id ? `${environment.api}users/one/${params.id}` : `${environment.api}users/one`;
+        const api = params.id ? (
+            user.deleted ? 
+            `${environment.api}users/one/${params.id}/restore` : 
+            `${environment.api}users/one/${params.id}`
+            ) : `${environment.api}users/one`;
         
         fetch(api, requestOptions)
           .then(async response => {
@@ -102,10 +118,79 @@ export function UsersCreate(props: any) {
           });
     }
 
-    const onUserSubmit = (event) => {
+    const onUserDelete = (event) => {
         event.preventDefault();
-        saveUser(user);
+        userDelete(event.target[1].value === user.name);
     }
+
+    const userDelete = (toDelete) => {
+
+        if (!toDelete) {
+            return;
+        }
+        
+        setLoading(true);
+
+        const requestOptions = {
+            method: 'DELETE',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : ''
+            }
+        };
+
+        fetch(`${environment.api}users/one/${params.id}`, requestOptions)
+          .then(async response => {
+              const data = await response.json();
+    
+              setLoading(false);
+    
+              // check for error response
+              if (!response.ok) {
+                setAlert(data.message);
+              } else {
+                history.push(`${environment.path}admin`);
+              }
+          })
+          .catch(error => {
+              setLoading(false);
+              console.error('There was an error!', error);
+          });
+    }
+
+    function DeleteUserModal(props) {
+        return (
+        <Modal
+            {...props}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            animation={false}
+        >
+            <Form onSubmit={onUserDelete}>
+                <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                    Delete user
+                </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                <p>
+                    In order to delete, please type the name of the user
+                </p>
+                <Row>
+                    <Col>
+                        <Form.Control type="text" name="delete" placeholder={user?.name ? user.name : ''}/>
+                    </Col>
+                </Row>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant='outline-primary' onClick={props.onHide}>Close</Button>
+                    <Button variant='danger' type="submit" disabled={isLoading}>Delete</Button>
+                </Modal.Footer>
+            </Form>
+        </Modal>
+        );
+      }
 
     return (        
         <div>
@@ -147,7 +232,7 @@ export function UsersCreate(props: any) {
 
                             <Col>
                                 <p>Roles</p>
-                                <Form.Row className="text-center">
+                                <Form.Row>
                                     <Form.Group as={Col} id="formGridroles">
                                         <Form.Check type="checkbox" label="Developer" name="roles" value="developer" checked={user?.roles && user?.roles.includes('developer')} onChange={handleChange}/>
                                         <Form.Control.Feedback type="valid">- add goals</Form.Control.Feedback>
@@ -163,7 +248,7 @@ export function UsersCreate(props: any) {
                             <Col md={6}></Col>
                             <Col md={6}>
                                 <p>Team</p>
-                                <Form.Row className="text-center">
+                                <Form.Row>
                                     <Form.Group as={Col} id="formGridFront">
                                         <Form.Check label="Frontend" type="checkbox" name="teams" value="frontend" checked={user?.teams && user?.teams.includes('frontend')} onChange={handleChange}/>
                                     </Form.Group>
@@ -182,13 +267,32 @@ export function UsersCreate(props: any) {
                                 </Form.Row>
                             </Col>
                         </Form.Row>
-                        <Button variant={params.id ? 'outline-primary' : 'primary'} type="submit" disabled={isLoading}>
-                        {isLoading ? 'Saving…' : 'Save'}
-                        </Button>
+                        <Form.Row>
+                            <Col md={2}>
+
+                                <Button variant={params.id ? (user.deleted ? 'outline-warning' : 'outline-primary') : 'primary'} type="submit" disabled={isLoading}>
+                                {isLoading ? 'Saving…' :  (user.deleted ? 'Restore' : 'Save')}
+                                </Button>
+                            </Col>
+                            <Col md={10}>
+                                {
+                                    (params?.id && !user.deleted) ?
+                                        <Button variant='outline-danger' type="button" disabled={isLoading} onClick={() => setDeleteModalShow(true)}>
+                                        Delete {user?.name ? user.name : 'user'}
+                                        </Button>
+                                        : <></>
+                                }
+                            </Col>
+                        </Form.Row>
                     </Form>
                 </Container>
             </div>
-        </div>           
+
+            <DeleteUserModal
+                show={modalShow}
+                onHide={() => setDeleteModalShow(false)}
+            />
+        </div>
     );
 }
 

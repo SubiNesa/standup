@@ -32,6 +32,9 @@ export const UserSchema = new mongoose.Schema ({
     projects: {
         type: [String],
         default: ['']
+    },
+    deletedAt: {
+        type: Date
     }
 }, {
     versionKey: false,

@@ -9,4 +9,5 @@ export interface User extends Document {
     projects: [string];
     createdAt: Date;
     updatedAt: Date;
+    deletedAt: Date;
 }

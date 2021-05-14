@@ -65,4 +65,12 @@ export class CreateUserDto {
     })
     @IsNotEmpty()
     readonly projects: string[];
+
+    // DeletedAt
+    @ApiProperty({
+      example: '2021-05-14T21:19:11.415+00:00',
+      description: 'Date of delete',
+      format: 'date'
+    })
+    deletedAt: Date;
   }

@@ -29,7 +29,8 @@ export class UsersService {
             teams: user.teams,
             projects: user.projects,
             name: user.name,
-            email: user.email
+            email: user.email,
+            deleted: !!user.deletedAt
         };
     }
 
@@ -44,6 +45,12 @@ export class UsersService {
         await this.isEmailUnique(data.email, id);
         const user = await this.userModel.findByIdAndUpdate(id, data);
         return user;
+    }
+
+    async delete(id): Promise<User> {
+        const user = await this.findOneUser(id);
+        user.deletedAt = new Date();
+        return await this.userModel.findByIdAndUpdate(id, user);
     }
 
     async login(loginUserDto: LoginUserDto) {

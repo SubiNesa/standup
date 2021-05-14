@@ -70,8 +70,13 @@ export class GoalsService {
     const monday = this.utilsDates.getMonday(date); 
     const friday = new Date(this.utilsDates.getMonday(date).setDate(this.utilsDates.getMonday(date).getDate() + 5));
 
-    // TODO improve
-    const filt = filters.length > 0 ? {teams: { "$in": filters} } :  {};
+    // without deletedAt
+    let filt = { $or: [{ deletedAt: { $exists: false } } , { deletedAt: { $eq: null } }]};
+    
+    if (filters.length > 0) {
+      filt = {...filt,  ...{ teams: { "$in": filters}}}
+    } 
+   
     const users = await this.userModel.find(filt).sort({name: 1});
 
     // create table of dates

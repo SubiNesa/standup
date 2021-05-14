@@ -48,7 +48,7 @@ export function UsersList(props: any) {
                 <Container fluid>
                     <Row className="text-right mb-3">
                         <Col md={12}>
-                            <Button variant="outline-secondary" href="/admin/user">Add user</Button>
+                            <Button variant="outline-secondary" href={`${environment.path}admin/user`}>Add user</Button>
                         </Col>
                     </Row>
                     <Row>
@@ -67,15 +67,14 @@ export function UsersList(props: any) {
                                 <tbody>
                                     {
                                         data.users.map((user, index) => {
-                                            return <tr key={index}>
+                                            return <tr key={index} className={user.deletedAt ? 'text-danger': ''}>
                                                 <td>{user.name}</td>
                                                 <td>{user.email}</td>
                                                 <td>{user?.roles && user.roles.join(', ')}</td>
                                                 <td>{user?.teams && user.teams.join(', ')}</td>
                                                 <td>{user?.projects && user.projects.join(', ')}</td>
                                                 <td className="text-right">
-                                                    <Button variant="outline-primary" href={'/admin/user/' + user._id}><FontAwesomeIcon icon={["fas", "edit"]} /></Button>
-                                                    {/* <Button variant="outline-danger" className="ml-2"><FontAwesomeIcon icon={["fas", "trash-alt"]} /></Button> */}
+                                                    <Button variant="outline-primary" href={`${environment.path}admin/user/` + user._id}><FontAwesomeIcon icon={["fas", "edit"]} /></Button>
                                                 </td>
                                             </tr>
                                         })

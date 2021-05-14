@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body, UseGuards, Req, Param, HttpCode, HttpStatus, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, UseGuards, Req, Param, HttpCode, HttpStatus, BadRequestException } from '@nestjs/common';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { LoginUserDto } from './dto/login-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -64,6 +64,29 @@ export class UsersController {
     @ApiCreatedResponse({})
     async update(@Param() params, @Body() createUserDto: CreateUserDto) {
         return await this.usersService.update(params.id, createUserDto);
+    }
+
+    @Put('/one/:id/restore')
+    @UseGuards(AuthGuard('jwt'))
+    @Roles('admin')
+    @ApiBearerAuth()
+    @ApiOperation({summary: 'Restore user'})
+    @HttpCode(HttpStatus.CREATED)
+    @ApiCreatedResponse({})
+    async restore(@Param() params, @Body() createUserDto: CreateUserDto) {
+        createUserDto.deletedAt = null;
+        return await this.usersService.update(params.id, createUserDto);
+    }
+
+    @Delete('/one/:id')
+    @UseGuards(AuthGuard('jwt'))
+    @Roles('admin')
+    @ApiBearerAuth()
+    @ApiOperation({summary: 'Delete user'})
+    @HttpCode(HttpStatus.OK)
+    @ApiCreatedResponse({})
+    async delete(@Param() params) {
+        return await this.usersService.delete(params.id);
     }
 
     @Post('login')
