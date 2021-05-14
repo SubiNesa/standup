@@ -2,9 +2,9 @@ import React, { CSSProperties, useEffect, useState } from 'react';
 
 import styles from  './front-standup-home.module.scss';
 
-import { Container, Row, Col, Table, Button, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Table, Button, Spinner, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faArrowRight, faCalendarWeek } from '@fortawesome/free-solid-svg-icons'
 import HomeTask from './task/task';
 import UtilsDates from '../../../../../utils/dates';
 
@@ -32,25 +32,45 @@ export function FrontStandupHome(props: FrontStandupHomeProps) {
   const [state, setStandUp] = useState({
     loading: false,
     monday: utilsDates.getMonday(new Date()),
+    filters: {},
     goals: [],
   });
   
   buildWeekTable(state.monday);
 
   useEffect(() => {
+    console.log('useEffect');
+    console.log(state);
     setStandUp({ ...state, loading: true });
-    const apiUrl = `${environment.api}goals/${utilsDates.getFormatDate(state.monday, '-')}`;
+
+    let apiUrl = `${environment.api}goals/${utilsDates.getFormatDate(state.monday, '-')}`;
+    if (Object.keys(state.filters).length > 0) {
+      let filters = '?';
+      Object.keys(state.filters).forEach((key, index) => {
+        if (index > 0) {
+          filters += '&';
+        }
+        filters += `${key}=${state.filters[key]}`;
+      });
+      apiUrl += filters;
+    }
+
     fetch(apiUrl)
       .then((res) => res.json())
       .then((goals) => {
         setStandUp({...state, ...{ loading: false, goals: goals}});
       });
-  }, [state.monday]);
+  }, [state.monday, state.filters]);
 
   const onChangeDates = (days) => {
-    const monday = utilsDates.getMonday(state.monday);
+    const monday = days === 0 ? utilsDates.getMonday(new Date()) : utilsDates.getMonday(state.monday);
     const date = new Date(monday.setDate(monday.getDate() + days))
     setStandUp({...state,  ...{ monday: date, goals: [] }});
+  }
+
+  const onChangeFilters = (event) => {
+    state.filters = {...state.filters, ...{[event.target.name]: event.target.checked}};
+    setStandUp({...state, ...{filters: state.filters, goals: []}});
   }
 
 
@@ -76,12 +96,38 @@ export function FrontStandupHome(props: FrontStandupHomeProps) {
       <div>
         <Container fluid>
           <Row style={navigationButtons} className="text-right">
-            <Col md={12}>
+            <Col md={10}>
+              <Form>
+                <Form.Check 
+                  inline 
+                  type="checkbox"
+                  id="front"
+                  label="Frontend"
+                  name="front"
+                  onClick={onChangeFilters}
+                />
+                <Form.Check
+                  inline 
+                  type="checkbox"
+                  id="back"
+                  label="Backend"
+                  name="back"
+                  onClick={onChangeFilters} 
+                />
+              </Form>
+            </Col>
+            <Col md={2}>
               <Button 
                 variant="outline-secondary" 
                 size="sm" 
                 onClick={onChangeDates.bind(this, -7)} 
                 disabled={state.loading}> <FontAwesomeIcon icon={faArrowLeft} /> </Button> 
+              <Button 
+                variant="outline-secondary" 
+                size="sm" 
+                onClick={onChangeDates.bind(this, 0)} 
+                className="ml-2"
+                disabled={state.loading}> <FontAwesomeIcon icon={faCalendarWeek}/> </Button> 
               <Button 
                 variant="outline-secondary" 
                 size="sm" 

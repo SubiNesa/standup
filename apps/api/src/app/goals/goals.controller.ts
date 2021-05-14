@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req, Body, Param, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, Body, Param, Query, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
 import {
   ApiTags,
   ApiCreatedResponse,
@@ -23,8 +23,8 @@ export class GoalsController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get all goals' })
   @ApiOkResponse({})
-  async getAllGoal(@Param() params) {
-    return await this.goalsService.getAllGoals(params.date);
+  async getAllGoal(@Param() params, @Query() queries) {
+    return await this.goalsService.getAllGoals(params.date, queries);
   }
 
   @Post()

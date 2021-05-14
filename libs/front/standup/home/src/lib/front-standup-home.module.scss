@@ -5,3 +5,62 @@
     border-bottom: 1px solid #ebebeb;
     margin-bottom: 15px;
 }
+
+#valueItemDrop .dropdown-menu {
+    padding: 0 10px;
+    top: 22px;
+    width: 100%;
+    box-shadow: none;
+    border-radius: none;
+}
+#valueItemDrop .checkbox label:before {
+ content: "";
+ display: inline-block;
+ width: 16px;
+ height: 16px;
+ margin-right: 10px;
+ position: absolute;
+ left: 0;
+ bottom: 4px;
+ background-color: transparent;
+ border: 1px solid #ccc;
+}
+
+#valueItemDrop .checkbox input[type=checkbox] {
+ display: none;
+}
+
+#valueItemDrop .checkbox label {
+    padding-left: 25px;
+    font-weight: bold;
+}
+
+#valueItemDrop .checkbox label:before {
+    border: 1px solid #ccc;
+ border-radius: 3px;
+}
+
+#valueItemDrop .checkbox input[type=checkbox]:checked + label:before {
+ content: "\2714";
+ font-size: 15px;
+ color: #4A90E2;
+ text-align: center;
+ line-height: 14px;
+ padding: 0px;
+ font-weight: normal;
+}
+
+#valueItemDrop .selectbox {
+    border-radius: 5px;
+    padding: 3px 5px;
+    width: 100%;
+    border: 1px solid #A4A4A4;
+    float: right;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: 163px 8px;
+    background-color: white;
+}

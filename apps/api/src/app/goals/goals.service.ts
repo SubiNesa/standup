@@ -37,15 +37,42 @@ export class GoalsService {
     return goal;
   }
   
-  async getAllGoals(date): Promise<any> {
+  async getAllGoals(date, options): Promise<any> {
 
     const goals = [];
     let init = {};
+    let filters = [];
+
+    const setFilters = (key: string, type: string) => {
+      if (options[key] == 'true') {
+        filters.push(type);
+      } else {
+        const index = filters.find(f => f === type);
+        if (index >= 0) {
+          filters.splice(index, 1); 
+        }
+      }
+    }
+
+    Object.keys(options).forEach((key) => {
+      switch (key) {
+        case 'front': {
+          setFilters(key, 'frontend');
+          break;
+        }
+        case 'back': {
+          setFilters(key, 'backend');
+          break;
+        }
+      }
+    });
 
     const monday = this.utilsDates.getMonday(date); 
     const friday = new Date(this.utilsDates.getMonday(date).setDate(this.utilsDates.getMonday(date).getDate() + 5));
 
-    const users = await this.userModel.find({});
+    // TODO improve
+    const filt = filters.length > 0 ? {teams: { "$in": filters} } :  {};
+    const users = await this.userModel.find(filt).sort({name: 1});
 
     // create table of dates
     const initialize = (initial, date) => {
