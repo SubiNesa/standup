@@ -101,7 +101,7 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
         <Container>
           <Form onSubmit={onGoalSubmit}>
 
-            <Form.Row>
+            <Row className='mb-3'>
               <Form.Group as={Col} controlId="formGridTicket">
                 <Form.Label>Ticket</Form.Label>
                 <Form.Control type="text" value={state.goal.ticket} name="ticket" onChange={handleChange}/>
@@ -124,9 +124,9 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
                   <option value="5">5 days</option>
                 </Form.Control>
               </Form.Group>
-            </Form.Row>
+            </Row>
 
-            <Form.Row>
+            <Row>
               <Form.Group as={Col} id="formGridBlocked">
                 <Form.Check type="checkbox" label="Blocked" name="blocked" onChange={handleChange}/>
                 <p className="text-secondary">I am prevented from reaching somewhere by someone or something</p>
@@ -136,7 +136,7 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
                 <Form.Label>Details</Form.Label>
                 <Form.Control as="textarea" rows={2} value={state.goal.details} name="details" onChange={handleChange}/>
               </Form.Group>
-            </Form.Row>
+            </Row>
 
             <Button variant="primary" type="submit" disabled={isLoading}>
               {isLoading ? 'Saving…' : 'Save'}

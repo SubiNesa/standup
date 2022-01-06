@@ -1,22 +1,152 @@
 {
   "version": 2,
-  "cli": { "defaultCollection": "@nrwl/react" },
-  "defaultProject": "standup",
-  "generators": {
-    "@nrwl/react": {
-      "application": { "style": "scss", "linter": "eslint", "babel": true },
-      "component": { "style": "scss" },
-      "library": { "style": "scss", "linter": "eslint" }
-    }
-  },
   "projects": {
+    "api": {
+      "root": "apps/api",
+      "sourceRoot": "apps/api/src",
+      "projectType": "application",
+      "prefix": "api",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/api",
+            "main": "apps/api/src/main.ts",
+            "tsConfig": "apps/api/tsconfig.app.json",
+            "assets": ["apps/api/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/api/src/environments/environment.ts",
+                  "with": "apps/api/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "api:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/api/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/api"],
+          "options": {
+            "jestConfig": "apps/api/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "front-standup-admin": {
+      "root": "libs/front/standup/admin",
+      "sourceRoot": "libs/front/standup/admin/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/front/standup/admin/**/*.{ts,tsx,js,jsx}"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/front/standup/admin"],
+          "options": {
+            "jestConfig": "libs/front/standup/admin/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "front-standup-goal": {
+      "root": "libs/front/standup/goal",
+      "sourceRoot": "libs/front/standup/goal/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/front/standup/goal/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/front/standup/goal"],
+          "options": {
+            "jestConfig": "libs/front/standup/goal/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "front-standup-home": {
+      "root": "libs/front/standup/home",
+      "sourceRoot": "libs/front/standup/home/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/front/standup/home/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/front/standup/home"],
+          "options": {
+            "jestConfig": "libs/front/standup/home/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "front-standup-profile": {
+      "root": "libs/front/standup/profile",
+      "sourceRoot": "libs/front/standup/profile/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/front/standup/profile/**/*.{ts,tsx,js,jsx}"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/front/standup/profile"],
+          "options": {
+            "jestConfig": "libs/front/standup/profile/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "standup": {
       "root": "apps/standup",
       "sourceRoot": "apps/standup/src",
       "projectType": "application",
       "targets": {
         "build": {
-          "executor": "@nrwl/web:build",
+          "executor": "@nrwl/web:webpack",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/standup",
@@ -64,7 +194,9 @@
             "proxyConfig": "./proxy.config.js"
           },
           "configurations": {
-            "production": { "buildTarget": "standup:build:production" }
+            "production": {
+              "buildTarget": "standup:build:production"
+            }
           }
         },
         "lint": {
@@ -96,146 +228,15 @@
             "devServerTarget": "standup:serve"
           },
           "configurations": {
-            "production": { "devServerTarget": "standup:serve:production" }
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["apps/standup-e2e/**/*.{js,ts}"] }
-        }
-      }
-    },
-    "front-standup-home": {
-      "root": "libs/front/standup/home",
-      "sourceRoot": "libs/front/standup/home/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/front/standup/home/**/*.{ts,tsx,js,jsx}"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/front/standup/home"],
-          "options": {
-            "jestConfig": "libs/front/standup/home/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
-    "front-standup-goal": {
-      "root": "libs/front/standup/goal",
-      "sourceRoot": "libs/front/standup/goal/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/front/standup/goal/**/*.{ts,tsx,js,jsx}"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/front/standup/goal"],
-          "options": {
-            "jestConfig": "libs/front/standup/goal/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
-    "api": {
-      "root": "apps/api",
-      "sourceRoot": "apps/api/src",
-      "projectType": "application",
-      "prefix": "api",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/node:build",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/apps/api",
-            "main": "apps/api/src/main.ts",
-            "tsConfig": "apps/api/tsconfig.app.json",
-            "assets": ["apps/api/src/assets"]
-          },
-          "configurations": {
             "production": {
-              "optimization": true,
-              "extractLicenses": true,
-              "inspect": false,
-              "fileReplacements": [
-                {
-                  "replace": "apps/api/src/environments/environment.ts",
-                  "with": "apps/api/src/environments/environment.prod.ts"
-                }
-              ]
+              "devServerTarget": "standup:serve:production"
             }
           }
         },
-        "serve": {
-          "executor": "@nrwl/node:execute",
-          "options": { "buildTarget": "api:build" }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["apps/api/**/*.ts"] }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/api"],
-          "options": {
-            "jestConfig": "apps/api/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
-    "front-standup-admin": {
-      "root": "libs/front/standup/admin",
-      "sourceRoot": "libs/front/standup/admin/src",
-      "projectType": "library",
-      "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": [
-              "libs/front/standup/admin/**/*.{ts,tsx,js,jsx}"
-            ]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/front/standup/admin"],
-          "options": {
-            "jestConfig": "libs/front/standup/admin/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
-    "front-standup-profile": {
-      "root": "libs/front/standup/profile",
-      "sourceRoot": "libs/front/standup/profile/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "libs/front/standup/profile/**/*.{ts,tsx,js,jsx}"
-            ]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/front/standup/profile"],
-          "options": {
-            "jestConfig": "libs/front/standup/profile/jest.config.js",
-            "passWithNoTests": true
+            "lintFilePatterns": ["apps/standup-e2e/**/*.{js,ts}"]
           }
         }
       }

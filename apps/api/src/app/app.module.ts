@@ -7,6 +7,6 @@ import { GoalsModule } from './goals/goals.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), GoalsModule, UsersModule, AuthModule, MongooseModule.forRoot(process.env.MONGO_URI, {useFindAndModify: false})]
+  imports: [ConfigModule.forRoot(), GoalsModule, UsersModule, AuthModule, MongooseModule.forRoot(process.env.MONGO_URI)]
 })
 export class AppModule {}

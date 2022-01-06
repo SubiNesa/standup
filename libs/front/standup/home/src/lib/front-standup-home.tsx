@@ -95,7 +95,7 @@ export function FrontStandupHome(props: FrontStandupHomeProps) {
       </div>
       <div>
         <Container fluid>
-          <Row style={navigationButtons} className="text-right">
+          <Row style={navigationButtons} className="text-end">
             <Col md={10}>
               <Form>
                 <Form.Check 
@@ -126,14 +126,14 @@ export function FrontStandupHome(props: FrontStandupHomeProps) {
                 variant="outline-secondary" 
                 size="sm" 
                 onClick={onChangeDates.bind(this, 0)} 
-                className="ml-2"
+                className="ms-2"
                 disabled={state.loading}> <FontAwesomeIcon icon={faCalendarWeek}/> </Button> 
               <Button 
                 variant="outline-secondary" 
                 size="sm" 
                 onClick={onChangeDates.bind(this, 7)} 
                 disabled={state.loading}
-                className="ml-2"> <FontAwesomeIcon icon={faArrowRight} /> </Button>
+                className="ms-2"> <FontAwesomeIcon icon={faArrowRight} /> </Button>
             </Col>
           </Row>
           <Row>

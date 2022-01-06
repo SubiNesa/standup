@@ -33,8 +33,8 @@ const useResize = (myRef) => {
     
     useEffect(() => {
         const handleResize = () => {
-        setWidth(myRef.current.parentElement.parentElement.offsetWidth)
-        setHeight(myRef.current.offsetHeight)
+            setWidth(myRef.current.parentElement.parentElement.offsetWidth)
+            setHeight(myRef.current.offsetHeight)
         }
 
         handleResize();
@@ -42,7 +42,7 @@ const useResize = (myRef) => {
         window.addEventListener('resize', handleResize)
     
         return () => {
-        window.removeEventListener('resize', handleResize)
+            window.removeEventListener('resize', handleResize)
         }
     }, [myRef])
     
@@ -53,8 +53,8 @@ const useResize = (myRef) => {
 
     const renderTooltip = (props) => (
         <Popover id="popover-basic" {...props}>
-            <Popover.Title as="h3">{props.goal.ticket}</Popover.Title>
-            <Popover.Content>
+            <Popover.Header as="h3">{props.goal.ticket}</Popover.Header>
+            <Popover.Body>
                 <Row >
                     <Col sm={1}><FontAwesomeIcon icon={["fas", "bullseye"]} /></Col>
                     <Col>{props.goal.title}</Col>
@@ -105,7 +105,7 @@ const useResize = (myRef) => {
                         })
                     : <span></span>
                 }
-            </Popover.Content>
+            </Popover.Body>
         </Popover>
     );
 
@@ -129,14 +129,14 @@ const useResize = (myRef) => {
 
     return (
         <OverlayTrigger
-            placement="bottom"
+            placement="auto"
             delay={{ show: 250, hide: 400 }}
             overlay={renderTooltip(props)}
             >
             <div style={setStyle()} ref={taskRef}>
                 {renderBlocked(props.goal)}
                 {props.goal.ticket}
-                <span className="float-right">{displayDays(props.goal.finish)}</span>
+                <span className="float-end">{displayDays(props.goal.finish)}</span>
             </div>
             
 

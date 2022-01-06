@@ -212,7 +212,7 @@ export function UsersCreate(props: any) {
                     }
                     <Form onSubmit={onUserSubmit}>
 
-                        <Form.Row>
+                        <Row>
                             <Form.Group as={Col} controlId="formGridName">
                                 <Form.Label>Name</Form.Label>
                                 <Form.Control type="text" name="name" value={user.name} onChange={handleChange}/>
@@ -222,9 +222,9 @@ export function UsersCreate(props: any) {
                                 <Form.Label>Email</Form.Label>
                                 <Form.Control type="email" name="email" value={user.email} onChange={handleChange}/>
                             </Form.Group>
-                        </Form.Row>
+                        </Row>
 
-                        <Form.Row>
+                        <Row>
                             <Form.Group as={Col} controlId="formGridProjects">
                                 <Form.Label>Projects</Form.Label>
                                 <Form.Control type="text" name="projects" value={user.projects} onChange={handleChange}/>
@@ -232,7 +232,7 @@ export function UsersCreate(props: any) {
 
                             <Col>
                                 <p>Roles</p>
-                                <Form.Row>
+                                <Row>
                                     <Form.Group as={Col} id="formGridroles">
                                         <Form.Check type="checkbox" label="Developer" name="roles" value="developer" checked={user?.roles && user?.roles.includes('developer')} onChange={handleChange}/>
                                         <Form.Control.Feedback type="valid">- add goals</Form.Control.Feedback>
@@ -241,14 +241,14 @@ export function UsersCreate(props: any) {
                                     <Form.Group as={Col} id="formGridAdmin">
                                         <Form.Check type="checkbox" label="Admin" name="roles" value="admin" checked={user?.roles && user?.roles.includes('admin')} onChange={handleChange}/>
                                     </Form.Group>
-                                </Form.Row>
+                                </Row>
                             </Col>
-                        </Form.Row>
-                        <Form.Row>
+                        </Row>
+                        <Row>
                             <Col md={6}></Col>
                             <Col md={6}>
                                 <p>Team</p>
-                                <Form.Row>
+                                <Row>
                                     <Form.Group as={Col} id="formGridFront">
                                         <Form.Check label="Frontend" type="checkbox" name="teams" value="frontend" checked={user?.teams && user?.teams.includes('frontend')} onChange={handleChange}/>
                                     </Form.Group>
@@ -264,10 +264,10 @@ export function UsersCreate(props: any) {
                                     <Form.Group as={Col} id="formGridOthers">
                                         <Form.Check label="Others" type="checkbox" name="teams" value="others" checked={user?.teams && user?.teams.includes('others')} onChange={handleChange}/>
                                     </Form.Group>
-                                </Form.Row>
+                                </Row>
                             </Col>
-                        </Form.Row>
-                        <Form.Row>
+                        </Row>
+                        <Row>
                             <Col md={2}>
 
                                 <Button variant={params.id ? (user.deleted ? 'outline-warning' : 'outline-primary') : 'primary'} type="submit" disabled={isLoading}>
@@ -283,7 +283,7 @@ export function UsersCreate(props: any) {
                                         : <></>
                                 }
                             </Col>
-                        </Form.Row>
+                        </Row>
                     </Form>
                 </Container>
             </div>

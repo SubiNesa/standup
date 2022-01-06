@@ -21,11 +21,11 @@ export function HomeNavbar(props: NavbarProps) {
     history.push(`${environment.path}`)
   }
   return (
-    <Navbar collapseOnSelect expand="lg" variant="dark" style={style}>
+    <Navbar collapseOnSelect expand="lg" variant="dark" style={style} className="px-1">
       <Navbar.Brand>StandUp</Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
-        <Nav className="mr-auto">
+        <Nav className="me-auto">
           <Nav.Link href={`${environment.path}home`}>Home</Nav.Link>
           {
               props.token ? <Nav.Link href={`${environment.path}goal`}>Create</Nav.Link> : ''
@@ -34,7 +34,7 @@ export function HomeNavbar(props: NavbarProps) {
         <Nav>
           {
               props.token ? 
-              <NavDropdown title="Account" id="collasible-nav-dropdown" alignRight>
+              <NavDropdown title="Account" id="collasible-nav-dropdown" align="end" >
                 <NavDropdown.Item href={`${environment.path}profile`}>Profile</NavDropdown.Item>
                 <NavDropdown.Item href={`${environment.path}admin`}>Admin</NavDropdown.Item>
                 <NavDropdown.Divider />

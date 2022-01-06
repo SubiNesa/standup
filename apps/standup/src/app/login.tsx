@@ -14,7 +14,6 @@ export function Login({ setToken }) {
 
     const leftLay: CSSProperties = {
         backgroundColor: 'rgba(135, 63, 217, 0.73)',
-        position: 'absolute',
         width: '100%',
         height: '100%',
         padding: '0px'
@@ -89,11 +88,11 @@ export function Login({ setToken }) {
                 <div className="h-100 w-100 d-table">
                     <div className="d-table-cell align-middle">
                         <Form onSubmit={handleSubmit}>
-                            <Form.Group controlId="formBasicEmail">
+                            <Form.Group className="mb-3" controlId="formBasicEmail">
                                 <Form.Control type="email" placeholder="Email" name="email" onChange={handleChange} isInvalid={invalid}/>
                             </Form.Group>
 
-                            <Form.Group controlId="formBasicPassword">
+                            <Form.Group className="mb-3" controlId="formBasicPassword">
                                 <Form.Control type="password" placeholder="Password" name="password" onChange={handleChange} isInvalid={invalid}/>
                                 <Form.Control.Feedback type="invalid">
                                     Invalid credentials!

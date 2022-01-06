@@ -105,7 +105,7 @@ export function FrontStandupProfile(props: FrontStandupProfileProps) {
                 <Container>
                     <Form onSubmit={onUserSubmit}>
 
-                        <Form.Row>
+                        <Row>
                             <Form.Group as={Col} controlId="formGridName">
                                 <Form.Label>Name</Form.Label>
                                 <Form.Control type="text" name="name" value={user.name} readOnly />
@@ -115,9 +115,9 @@ export function FrontStandupProfile(props: FrontStandupProfileProps) {
                                 <Form.Label>Email</Form.Label>
                                 <Form.Control type="email" name="email" value={user.email} readOnly />
                             </Form.Group>
-                        </Form.Row>
+                        </Row>
 
-                        <Form.Row>
+                        <Row>
                             <Form.Group as={Col} controlId="formGridCurrentPassword">
                                 <Form.Label>Current password</Form.Label>
                                 <Form.Control type="text" name="current" required onChange={handleChange}/>
@@ -135,7 +135,7 @@ export function FrontStandupProfile(props: FrontStandupProfileProps) {
                                   New password do not match!
                                 </Form.Control.Feedback>
                             </Form.Group>
-                        </Form.Row>
+                        </Row>
 
                         <Button variant={params.id ? 'outline-primary' : 'primary'} type="submit" disabled={isLoading || invalidPassword}>
                         {isLoading ? 'Saving…' : 'Save'}

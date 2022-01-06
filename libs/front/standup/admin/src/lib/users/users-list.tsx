@@ -46,7 +46,7 @@ export function UsersList(props: any) {
             </div>
             <div>
                 <Container fluid>
-                    <Row className="text-right mb-3">
+                    <Row className="text-end mb-3">
                         <Col md={12}>
                             <Button variant="outline-secondary" href={`${environment.path}admin/user`}>Add user</Button>
                         </Col>
@@ -73,7 +73,7 @@ export function UsersList(props: any) {
                                                 <td>{user?.roles && user.roles.join(', ')}</td>
                                                 <td>{user?.teams && user.teams.join(', ')}</td>
                                                 <td>{user?.projects && user.projects.join(', ')}</td>
-                                                <td className="text-right">
+                                                <td className="text-end">
                                                     <Button variant="outline-primary" href={`${environment.path}admin/user/` + user._id}><FontAwesomeIcon icon={["fas", "edit"]} /></Button>
                                                 </td>
                                             </tr>
