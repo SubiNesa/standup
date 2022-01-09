@@ -123,7 +123,7 @@ const useResize = (myRef) => {
 
     const renderBlocked = (goal) => {
         if (goal.blocked) {
-            return <FontAwesomeIcon className="mr-2" icon={["fas", "exclamation-triangle"]} /> 
+            return <FontAwesomeIcon className="me-2" icon={["fas", "exclamation-triangle"]} /> 
         } 
     }
 

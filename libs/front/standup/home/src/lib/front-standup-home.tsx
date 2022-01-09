@@ -43,7 +43,7 @@ export function FrontStandupHome(props: FrontStandupHomeProps) {
     console.log(state);
     setStandUp({ ...state, loading: true });
 
-    let apiUrl = `${environment.api}goals/${utilsDates.getFormatDate(state.monday, '-')}`;
+    let apiUrl = `${environment.api}goals?from=${utilsDates.getFormatDate(state.monday, '-')}`;
     if (Object.keys(state.filters).length > 0) {
       let filters = '?';
       Object.keys(state.filters).forEach((key, index) => {

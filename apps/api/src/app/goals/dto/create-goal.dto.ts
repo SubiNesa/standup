@@ -1,12 +1,27 @@
 import { IsNotEmpty, MinLength, MaxLength, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
+export class SearchGoalDto {
+    @ApiProperty({
+        example: 'Example ticket',
+        description: 'ticket of goal',
+        format: 'string',
+        minLength: 3,
+        maxLength: 255
+    })
+    @IsNotEmpty()
+    @IsString()
+    @MinLength(5)
+    @MaxLength(255)
+    readonly ticket: string;
+}
+
 export class CreateGoalDto {
     @ApiProperty({
         example: 'Example ticket',
         description: 'ticket of goal',
         format: 'string',
-        minLength: 6,
+        minLength: 3,
         maxLength: 255
     })
     @IsNotEmpty()

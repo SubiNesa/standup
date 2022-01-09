@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, Col, Container, Form, Row } from 'react-bootstrap';
+import { Button, Col, Container, Form, Row, Alert } from 'react-bootstrap';
 
 import styles from  './front-standup-goal.module.scss';
 
@@ -20,17 +20,24 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
 
   const history = useHistory();
 
-  const state = {
-    goal: {
-      ticket: props.ticket,
-      title: props.title,
-      finish: props.fnish,
-      blocked: props.blocked,
-      details: props.details
+  const requestOptions = {
+    method: 'GET',
+    headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : ''
     }
+  };
+
+  const search = (query: any) => {
+    fetch(`${environment.api}goals/search?${query.key}=${query.value}`, requestOptions)
+      .then((res) =>  !res.ok ? history.push(`${environment.path}`) : res.json())
+      .then((goal) => {
+        setGoal({ ...goal, ...goal });
+      }); 
   }
 
-
+  // alert for settings
+  const [showAlert, setShowAlert] = useState(true);
   // loading
   const [isLoading, setLoading] = useState(false);
   // submit
@@ -40,7 +47,21 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
     finish: '-1',
     blocked: false,
     details: ''
-  })
+  });
+
+  useEffect(() => {
+    fetch(`${environment.api}goals/last`, requestOptions)
+      .then((res) =>  !res.ok ? history.push(`${environment.path}`) : res.json())
+      .then((goal) => {
+        if (Object.keys(goal).length !== 0 && goal.constructor === Object) {
+          setGoal({ ...goal, ...goal });
+        }
+      });
+  }, [setGoal]);  
+
+  const handleBlur = (event) => {
+    search({key: event.target.name, value: event.target.value});
+  }
 
   const handleChange = (event) => {
     if (event.target.name === 'blocked') {
@@ -88,6 +109,17 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
     saveGoal(goal);
   }
 
+  const resetForm = (event) => {
+    event.preventDefault();
+    setGoal({
+      ticket: '',
+      title: '',
+      finish: '-1',
+      blocked: false,
+      details: ''
+    });
+  }
+
   return (
     <div>
       <div className={styles.header}>
@@ -104,17 +136,17 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
             <Row className='mb-3'>
               <Form.Group as={Col} controlId="formGridTicket">
                 <Form.Label>Ticket</Form.Label>
-                <Form.Control type="text" value={state.goal.ticket} name="ticket" onChange={handleChange}/>
+                <Form.Control type="text" value={goal.ticket} name="ticket" onBlur={handleBlur} onChange={handleChange}/>
               </Form.Group>
 
               <Form.Group as={Col} controlId="formGridTitle" >
                 <Form.Label>Title</Form.Label>
-                <Form.Control type="text" value={state.goal.title} name="title" onChange={handleChange}/>
+                <Form.Control type="text" value={goal.title} name="title" onChange={handleChange}/>
               </Form.Group>
 
               <Form.Group as={Col} controlId="formGridFinish">
                 <Form.Label>Finish</Form.Label>
-                <Form.Control as="select" defaultValue="-1" name="finish" onChange={handleChange}>
+                <Form.Control as="select" value={goal?.finish.toString() !== '0' ? (Number(goal?.finish) - 1).toString() : goal?.finish} name="finish" onChange={handleChange}>
                   <option value="-1">I do not know</option>
                   <option value="0">Today</option>
                   <option value="1">Tomorrow</option>
@@ -126,19 +158,20 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
               </Form.Group>
             </Row>
 
-            <Row>
+            <Row className='mb-3'>
               <Form.Group as={Col} id="formGridBlocked">
-                <Form.Check type="checkbox" label="Blocked" name="blocked" onChange={handleChange}/>
+                <Form.Check type="checkbox" checked={goal.blocked} label="Blocked" name="blocked" onChange={handleChange}/>
                 <p className="text-secondary">I am prevented from reaching somewhere by someone or something</p>
               </Form.Group>
 
               <Form.Group as={Col} controlId="formGridDetails">
                 <Form.Label>Details</Form.Label>
-                <Form.Control as="textarea" rows={2} value={state.goal.details} name="details" onChange={handleChange}/>
+                <Form.Control as="textarea" rows={2} value={goal.details} name="details" onChange={handleChange}/>
               </Form.Group>
             </Row>
 
-            <Button variant="primary" type="submit" disabled={isLoading}>
+            <Button variant="light" onClick={resetForm}>Reset</Button>
+            <Button variant="primary" className="ms-3" type="submit" disabled={isLoading}>
               {isLoading ? 'Saving…' : 'Save'}
             </Button>
           </Form>

@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { Goal } from './interfaces/goal.interface';
+import { Goal, GoalResponse} from './interfaces/goal.interface';
 import { User } from '../users/interfaces/users.interface';
 import { CreateGoalDto } from './dto/create-goal.dto';
 
@@ -12,23 +12,30 @@ import UtilsDates from '../../../../../libs/utils/dates';
 @Injectable()
 export class GoalsService {
 
-    utilsDates = new UtilsDates();
+  utilsDates = new UtilsDates();
 
-    constructor(
-      @InjectModel('User') private readonly userModel: Model<User>,
-      @InjectModel('Goal') private readonly goalModel: Model<Goal>,
-    ) { }
+  constructor(
+    @InjectModel('User') private readonly userModel: Model<User>,
+    @InjectModel('Goal') private readonly goalModel: Model<Goal>,
+  ) { }
 
-    colors = [
-        '9261d2',
-        '8751cf',
-        '8144d4',
-        '742fd4',
-        '7a56d1',
-        '624cd1',
-        '5238d1',
-        '3f22c9'
-    ];
+  colors = [
+      '9261d2',
+      '8751cf',
+      '8144d4',
+      '742fd4',
+      '7a56d1',
+      '624cd1',
+      '5238d1',
+      '3f22c9'
+  ];
+
+  empty = {
+    "details": "",
+    "finish": -1,
+    "ticket": "",
+    "title": ""
+  };
 
   async createGoal(createGoalDto: CreateGoalDto, userId: string): Promise<Goal> {
     const goal = new this.goalModel(createGoalDto);
@@ -36,10 +43,54 @@ export class GoalsService {
     await goal.save();
     return goal;
   }
+
+  /**
+   * Fech the latest goal and return only if finish date superior to 0 aka Today
+   * @param userId 
+   * @returns 
+   */
+  async getLastGoal(userId): Promise<any> {
+    const list = await this.goalModel.find({userId: userId})
+      .sort({createdAt: -1})
+      .limit(1).select({
+        "_id": 0,
+        "updatedAt": 0,
+        "createdAt": 0,
+        "userId": 0
+      }
+    );
+    const goal: any = list[0] || {};
+    return goal?.finish === -1 ||  goal?.finish > 0 ? goal : this.empty;
+  }
+
+  /**
+   * Search for goal with ticket
+   * @param userId 
+   * @returns 
+   */
+  async searchGoal(queries): Promise<any> {
+    const list = await this.goalModel.find({ticket: queries.ticket})
+      .sort({createdAt: -1})
+      .limit(1)
+      .select({
+        "_id": 0,
+        "updatedAt": 0,
+        "createdAt": 0,
+        "userId": 0
+      }
+    );
+    return list[0] || this.empty;
+  }
   
-  async getAllGoals(date, options): Promise<any> {
+  /**
+   * Get all the goals
+   * @param options 
+   * @returns 
+   */
+  async getAllGoals(options): Promise<any> {
 
     const goals = [];
+    const date = options.from;
     let init = {};
     let filters = [];
 

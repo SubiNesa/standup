@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req, Body, Param, Query, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, Body, Query, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
 import {
   ApiTags,
   ApiCreatedResponse,
@@ -10,21 +10,44 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { GoalsService } from './goals.service';
 
-import { CreateGoalDto } from './dto/create-goal.dto';
+import { CreateGoalDto, SearchGoalDto } from './dto/create-goal.dto';
+import { of } from 'rxjs';
 
 @ApiTags('Goals')
 @Controller('goals')
 export class GoalsController {
   constructor(private readonly goalsService: GoalsService) {}
 
-
-  @Get(':date')
+  @Get()
   // swagger
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get all goals' })
   @ApiOkResponse({})
-  async getAllGoal(@Param() params, @Query() queries) {
-    return await this.goalsService.getAllGoals(params.date, queries);
+  async getAllGoal(@Query() queries) {
+    return await this.goalsService.getAllGoals(queries);
+  }
+
+  @Get('search')
+  // swagger
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Get goal via search' })
+  @ApiOkResponse({})
+  async searchGoal(@Query() queries: SearchGoalDto) {
+    if (!queries.ticket) {
+      return of();
+    }
+    return await this.goalsService.searchGoal(queries);
+  }
+
+  @Get('last')
+  // swagger
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Get last goal' })
+  @ApiOkResponse({})
+  async getLastGoal(@Req() req) {
+    return await this.goalsService.getLastGoal(req.user._id);
   }
 
   @Post()
