@@ -5,7 +5,7 @@ import * as bcrypt from 'bcryptjs';
 import { AuthService } from './../auth/auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
+import { UpdateUserPasswordDto, UpdateUserSettingsDto} from './dto/update-user.dto';
 import { User } from './interfaces/users.interface';
 
 @Injectable()
@@ -31,6 +31,25 @@ export class UsersService {
             name: user.name,
             email: user.email,
             deleted: !!user.deletedAt
+        };
+    }
+
+    async getUserSettings(userId: string): Promise<any> {
+        const user = await this.userModel.findById(userId);
+
+        return {
+            settings: user.settings
+        };
+    }
+
+    async updateSettings(userId: string, settings: UpdateUserSettingsDto): Promise<any> {
+        const user = await this.userModel.findById(userId);
+        user.settings = settings;
+
+        await user.save();
+        return {
+            name: user.name,
+            email: user.email
         };
     }
 

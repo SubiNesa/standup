@@ -35,6 +35,16 @@ export const UserSchema = new mongoose.Schema ({
     },
     deletedAt: {
         type: Date
+    },
+    settings: {
+        goal: {
+            last: {
+                type: Boolean
+            },
+            search: {
+                type: Boolean
+            }
+        }
     }
 }, {
     versionKey: false,

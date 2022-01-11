@@ -10,4 +10,5 @@ export interface User extends Document {
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date;
+    settings?: Object;
 }

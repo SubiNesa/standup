@@ -2,9 +2,9 @@ import { Controller, Get, Post, Put, Delete, Body, UseGuards, Req, Param, HttpCo
 import { Roles } from '../auth/decorators/roles.decorator';
 import { LoginUserDto } from './dto/login-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
+import { UpdateUserPasswordDto, UpdateUserSettingsDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
-import { AuthGuard, PassportModule } from '@nestjs/passport';
+import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import {
     ApiCreatedResponse,
@@ -107,6 +107,16 @@ export class UsersController {
         return req.user;
     }
 
+    @Get('/me/settings')
+    @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
+    @ApiOperation({summary: 'Get current user'})
+    @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({})
+    async findConnectedUserSettings(@Req() req) {
+        return await this.usersService.getUserSettings(req.user._id);
+    }
+
     @Put('me')
     @UseGuards(AuthGuard('jwt'))
     @ApiBearerAuth()
@@ -118,5 +128,15 @@ export class UsersController {
             throw new BadRequestException('Wrong user.');
         }
         return await this.usersService.updatePassword(updateUserPasswordDto);
+    }
+
+    @Put('me/settings')
+    @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
+    @ApiOperation({summary: 'Update current user settings'})
+    @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({})
+    async updateConnectedUserSettings(@Req() req, @Body() updateUserSettings: UpdateUserSettingsDto) {
+        return await this.usersService.updateSettings(req.user._id, updateUserSettings);
     }
 }

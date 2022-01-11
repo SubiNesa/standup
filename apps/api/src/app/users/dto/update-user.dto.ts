@@ -1,4 +1,4 @@
-import { IsNotEmpty, MinLength, MaxLength, IsEmail, IsString } from 'class-validator';
+import { IsNotEmpty, MinLength, MaxLength, IsEmail, IsString, IsBoolean } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserPasswordDto {
@@ -61,3 +61,27 @@ export class UpdateUserPasswordDto {
     @MaxLength(1024)
     readonly current: string;
 }
+
+export class UpdateUserSettingsDto {
+
+    // Last
+    @ApiProperty({
+      example: 'true',
+      description: 'settings of user',
+      format: 'boolean'
+    })
+    @IsNotEmpty()
+    @IsBoolean()
+    readonly last: boolean;
+
+    // search
+    @ApiProperty({
+      example: 'true',
+      description: 'settings of user',
+      format: 'boolean'
+    })
+    @IsNotEmpty()
+    @IsBoolean()
+    readonly search: boolean;
+}
+

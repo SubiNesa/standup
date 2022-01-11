@@ -24,6 +24,13 @@ export function FrontStandupProfile(props: FrontStandupProfileProps) {
         current: ''
     });
 
+    const [settings, setSettings] = useState({
+        goal: {
+          last: undefined,
+          search: undefined
+        }
+      });
+
     const requestOptions = {
         method: 'GET',
         headers: { 
@@ -39,6 +46,24 @@ export function FrontStandupProfile(props: FrontStandupProfileProps) {
             setUser({ ...user, ...user });
           });
     }, [setUser]);
+
+    // get settings
+    useEffect(() => {
+        fetch(`${environment.api}users/me/settings`, requestOptions)
+        .then((res) =>  !res.ok ? history.push(`${environment.path}`) : res.json())
+        .then((data) => {
+        if (!data.settings.goal || Object.keys(data.settings.goal).length === 0) {
+            setSettings({ ...settings, ...{
+            goal: {
+                last: false,
+                search: false
+            }
+            }});
+        } else {
+            setSettings({ ...settings, ...data.settings });
+        }
+        })
+    }, []);
     
     const handleChange = (event) => {
 
@@ -53,6 +78,13 @@ export function FrontStandupProfile(props: FrontStandupProfileProps) {
             setUser({...user, [event.target.name]: event.target.value });
         }
     }
+
+    const handleSettingsChange = (event) => {
+        const data = { ... settings};
+        data.goal[event.target.name] = event.target.checked;
+        setSettings(data);
+    }
+    
 
     const saveUser = (data) => {
         setLoading(true);
@@ -87,10 +119,42 @@ export function FrontStandupProfile(props: FrontStandupProfileProps) {
           });
     }
 
+
+  const saveUserSettings = (data) => {    
+    const requestOptions = {
+      method: 'PUT',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : ''},
+      body: JSON.stringify(data)
+    };
+    
+    fetch(`${environment.api}users/me/settings`, requestOptions)
+      .then(async response => {
+          const data = await response.json();
+
+          // check for error response
+          if (!response.ok) {
+            const error = (data && data.message) || response.status;
+            console.log(error);
+          } else {
+            history.push(`${environment.path}home`);
+          }
+      })
+      .catch(error => {
+          console.error('There was an error!', error);
+      });
+  }
+
     const onUserSubmit = (event) => {
         event.preventDefault();
         saveUser(user);
     }
+
+    const onGoalSettingsSubmit = (event) => {
+        event.preventDefault();
+        saveUserSettings(settings);
+      }
 
     return (        
         <div>
@@ -103,6 +167,32 @@ export function FrontStandupProfile(props: FrontStandupProfileProps) {
             </div>
             <div>
                 <Container>
+                    <h5 className='mb-3'>Settings</h5>
+                    <Form onSubmit={onGoalSettingsSubmit}>
+                    <Col className='mb-3'>
+                        <Row>
+                        <Form.Group as={Col} id="formGridLast">
+                            <Form.Check label="Apply last goal automatically" type="checkbox" name="last" checked={settings?.goal?.last || false} onChange={handleSettingsChange}/>
+                        </Form.Group>
+                        </Row>
+                        <Row>
+                        <Form.Group as={Col} id="formGridSearch">
+                            <Form.Check label="Apply existing goal from the Ticket field" type="checkbox" name="search" checked={settings?.goal?.search || false} onChange={handleSettingsChange}/>
+                        </Form.Group>
+                        </Row>
+                    </Col>
+                    <div className="d-flex">
+                        <Button type="submit" variant="primary">
+                        Save settings
+                        </Button>
+                    </div>
+                    </Form>
+                </Container>
+            </div>
+            <hr/>
+            <div>
+                <Container>
+                    <h5 className='mb-3'>Account</h5>
                     <Form onSubmit={onUserSubmit}>
 
                         <Row>

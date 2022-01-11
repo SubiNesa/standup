@@ -28,16 +28,8 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
     }
   };
 
-  const search = (query: any) => {
-    fetch(`${environment.api}goals/search?${query.key}=${query.value}`, requestOptions)
-      .then((res) =>  !res.ok ? history.push(`${environment.path}`) : res.json())
-      .then((goal) => {
-        setGoal({ ...goal, ...goal });
-      }); 
-  }
-
   // alert for settings
-  const [showAlert, setShowAlert] = useState(true);
+  const [showAlert, setShowAlert] = useState(false);
   // loading
   const [isLoading, setLoading] = useState(false);
   // submit
@@ -48,16 +40,56 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
     blocked: false,
     details: ''
   });
+  // settings
+  const [settings, setSettings] = useState({
+    goal: {
+      last: undefined,
+      search: undefined
+    }
+  });
 
-  useEffect(() => {
-    fetch(`${environment.api}goals/last`, requestOptions)
+  // get search
+  const search = (query: any) => {
+    if (settings.goal.search) {
+      fetch(`${environment.api}goals/search?${query.key}=${query.value}`, requestOptions)
       .then((res) =>  !res.ok ? history.push(`${environment.path}`) : res.json())
       .then((goal) => {
-        if (Object.keys(goal).length !== 0 && goal.constructor === Object) {
-          setGoal({ ...goal, ...goal });
-        }
-      });
-  }, [setGoal]);  
+        setGoal({ ...goal, ...goal });
+      }); 
+    }
+  }  
+
+  // get settings
+  useEffect(() => {
+    fetch(`${environment.api}users/me/settings`, requestOptions)
+      .then((res) =>  !res.ok ? history.push(`${environment.path}`) : res.json())
+      .then((data) => {
+      if (!data.settings.goal || Object.keys(data.settings.goal).length === 0) {
+        setShowAlert(true);
+        setSettings({ ...settings, ...{
+          goal: {
+            last: true,
+            search: true
+          }
+        }});
+      } else {
+        setSettings({ ...settings, ...data.settings });
+      }
+    })
+  }, []);
+
+  // Get the latest
+  useEffect(() => {
+    if (settings.goal.last) {
+      fetch(`${environment.api}goals/last`, requestOptions)
+        .then((res) =>  !res.ok ? history.push(`${environment.path}`) : res.json())
+        .then((goal) => {
+          if (Object.keys(goal).length !== 0 && goal.constructor === Object) {
+              setGoal({ ...goal, ...goal });
+            }
+          })
+    }
+  }, [settings]);
 
   const handleBlur = (event) => {
     search({key: event.target.name, value: event.target.value});
@@ -65,10 +97,16 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
 
   const handleChange = (event) => {
     if (event.target.name === 'blocked') {
-      setGoal({...goal, [event.target.name]: event.target.value === 'on' })
+      setGoal({...goal, [event.target.name]: event.target.checked })
     } else {
       setGoal({...goal, [event.target.name]: event.target.value })
     }
+  }
+  
+  const handleSettingsChange = (event) => {
+    const data = { ... settings};
+    data.goal[event.target.name] = event.target.checked;
+    setSettings(data);
   }
 
   const saveGoal = (data) => {
@@ -104,9 +142,42 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
       });
   }
 
+  const saveUserSettings = (data) => {    
+    const requestOptions = {
+      method: 'PUT',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : ''},
+      body: JSON.stringify(data)
+    };
+    
+    fetch(`${environment.api}users/me/settings`, requestOptions)
+      .then(async response => {
+          const data = await response.json();
+
+          
+          // check for error response
+          if (!response.ok) {
+            const error = (data && data.message) || response.status;
+            console.log(error);
+          } else {
+            setShowAlert(false);
+          }
+
+      })
+      .catch(error => {
+          console.error('There was an error!', error);
+      });
+  }
+
   const onGoalSubmit = (event) => {
     event.preventDefault();
     saveGoal(goal);
+  }
+
+  const onGoalSettingsSubmit = (event) => {
+    event.preventDefault();
+    saveUserSettings(settings);
   }
 
   const resetForm = (event) => {
@@ -131,6 +202,36 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
       </div>
       <div>
         <Container>
+          <Alert show={showAlert} variant="warning">
+            <Alert.Heading>How's it going?!</Alert.Heading>
+            <p>
+              We've noticed missing settings! You can chose ...
+            </p>
+            <ul> 
+              <li>if the lastest goal should be taken automatically, do not worry you can always reset the form</li>
+              <li>if the goal should be searched after blur the Ticket field</li>
+            </ul>
+            <hr />
+            <Form onSubmit={onGoalSettingsSubmit}>
+              <Col>
+                <Row>
+                  <Form.Group as={Col} id="formGridLast">
+                    <Form.Check label="Apply last goal automatically" type="checkbox" name="last" checked={settings?.goal?.last || false} onChange={handleSettingsChange}/>
+                  </Form.Group>
+                </Row>
+                <Row>
+                  <Form.Group as={Col} id="formGridSearch">
+                    <Form.Check label="Apply existing goal from the Ticket field" type="checkbox" name="search" checked={settings?.goal?.search || false} onChange={handleSettingsChange}/>
+                  </Form.Group>
+                </Row>
+              </Col>
+              <div className="d-flex justify-content-end">
+                <Button type="submit" variant="outline-success">
+                  Save my settings
+                </Button>
+              </div>
+            </Form>
+          </Alert>
           <Form onSubmit={onGoalSubmit}>
 
             <Row className='mb-3'>
