@@ -87,6 +87,9 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
         .then((res) =>  !res.ok ? history.push(`${environment.path}`) : res.json())
         .then((goal) => {
           if (Object.keys(goal).length !== 0 && goal.constructor === Object) {
+              if (goal?.finish > 0) {
+                goal.finish = goal.finish - 1;
+              } 
               setGoal({ ...goal, ...goal });
             }
           })
@@ -99,9 +102,9 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
 
   const handleChange = (event) => {
     if (event.target.name === 'blocked') {
-      setGoal({...goal, [event.target.name]: event.target.checked })
+      setGoal({...goal, [event.target.name]: event.target.checked });
     } else {
-      setGoal({...goal, [event.target.name]: event.target.value })
+      setGoal({...goal, [event.target.name]: event.target.value });
     }
   }
   
@@ -139,7 +142,6 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
       })
       .catch(error => {
           setLoading(false);
-          // this.setState({ errorMessage: error.toString() });
           console.error('There was an error!', error);
       });
   }
@@ -249,7 +251,7 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
 
               <Form.Group as={Col} controlId="formGridFinish">
                 <Form.Label>Finish</Form.Label>
-                <Form.Control as="select" value={goal?.finish.toString() !== '0' ? (Number(goal?.finish) - 1).toString() : goal?.finish} name="finish" onChange={handleChange}>
+                <Form.Control as="select" value={goal?.finish} name="finish" onChange={handleChange}>
                   <option value="-1">I do not know</option>
                   <option value="0">Today</option>
                   <option value="1">Tomorrow</option>
