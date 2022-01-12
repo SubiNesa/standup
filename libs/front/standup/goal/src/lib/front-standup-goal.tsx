@@ -54,7 +54,9 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
       fetch(`${environment.api}goals/search?${query.key}=${query.value}`, requestOptions)
       .then((res) =>  !res.ok ? history.push(`${environment.path}`) : res.json())
       .then((goal) => {
-        setGoal({ ...goal, ...goal });
+        if (goal.ticket) {
+          setGoal({ ...goal, ...goal });
+        }
       }); 
     }
   }  
@@ -208,7 +210,7 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
               We've noticed missing settings! You can chose ...
             </p>
             <ul> 
-              <li>if the lastest goal should be taken automatically, do not worry you can always reset the form</li>
+              <li>if the latest goal should be taken automatically, do not worry you can always reset the form</li>
               <li>if the goal should be searched after blur the Ticket field</li>
             </ul>
             <hr />
