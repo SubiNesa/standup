@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Table, Button  } from 'react-bootstrap';
 import { useHistory } from 'react-router';
 
-import styles from './../front-standup-admin.module.scss';
+import styles from  './../../app.module.scss';
 
-import { environment } from '../../../../../../../apps/standup/src/environments/environment';
+import { environment } from '../../../environments/environment';
 
 export function UsersList(props: any) {
     const history = useHistory();

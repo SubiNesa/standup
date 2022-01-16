@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Col, Container, Form, Row, Alert } from 'react-bootstrap';
 
-import styles from  './front-standup-goal.module.scss';
+import styles from  './../app.module.scss';
 
-import { environment } from '../../../../../../apps/standup/src/environments/environment';
+import { environment } from '../../environments/environment';
 
 
 /* eslint-disable-next-line */
-export interface FrontStandupGoalProps {
+export interface StandupGoalProps {
   ticket: any;
   title: any;
   fnish: any;
@@ -16,7 +16,7 @@ export interface FrontStandupGoalProps {
   details: any;
 }
 
-export function FrontStandupGoal(props: FrontStandupGoalProps) {
+export function StandupGoal(props: StandupGoalProps) {
 
   const history = useHistory();
 
@@ -286,4 +286,4 @@ export function FrontStandupGoal(props: FrontStandupGoalProps) {
   );
 }
 
-export default FrontStandupGoal;
+export default StandupGoal;

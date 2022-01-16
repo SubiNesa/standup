@@ -6,16 +6,16 @@ import { Route } from 'react-router-dom';
 import UsersList from './users/users-list';
 import UsersCreate from './users/users-create';
 
-import { environment } from '../../../../../../apps/standup/src/environments/environment';
+import { environment } from '../../environments/environment';
 
 /* eslint-disable-next-line */
-export interface FrontStandupAdminProps {}
+export interface StandupAdminProps {}
 
 const switchStyle: CSSProperties = {
   'paddingLeft': '0px'
  }
 
-export function FrontStandupAdmin(props: FrontStandupAdminProps) {
+export function StandupAdmin(props: StandupAdminProps) {
   return (
     <div>
       <Switch style={switchStyle} > 
@@ -35,4 +35,4 @@ export function FrontStandupAdmin(props: FrontStandupAdminProps) {
   );
 }
 
-export default FrontStandupAdmin;
+export default StandupAdmin;

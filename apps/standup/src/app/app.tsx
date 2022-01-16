@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './app.module.scss';
 
 import { Route, Redirect, Switch } from 'react-router-dom';
@@ -8,10 +8,10 @@ import { environment } from '../environments/environment';
 import useToken from './token';
 import Login from './login';
 import { HomeNavbar } from './navbar';
-import { FrontStandupHome } from '@standup/front/standup/home';
-import { FrontStandupGoal } from '@standup/front/standup/goal';
-import { FrontStandupAdmin } from '@standup/front/standup/admin';
-import { FrontStandupProfile } from '@standup/front/standup/profile';
+import { StandupHome } from './home/home';
+import { StandupGoal } from './goal/goal';
+import { StandupAdmin } from './admin/admin';
+import { StandupProfile } from './profile/profile';
 
 export function App() {
   const mainPanel = React.useRef(null);
@@ -29,7 +29,7 @@ export function App() {
   return (
     <Switch>
       <Route exact path={`${environment.path}`}>
-        <Route path={`${environment.path}profile`} component={FrontStandupProfile} />
+        <Route path={`${environment.path}profile`} component={StandupProfile} />
         <Login setToken={setToken} />
       </Route>
       <Route exact path={`${environment.path}home`}>
@@ -37,7 +37,7 @@ export function App() {
           <div className="wrapper">
             <div className="main-panel" ref={mainPanel}>
               <HomeNavbar token={!!token} />
-              <FrontStandupHome />
+              <StandupHome />
             </div>
           </div>
         </div>
@@ -47,7 +47,7 @@ export function App() {
           <div className="wrapper">
             <div className="main-panel" ref={mainPanel}>
               <HomeNavbar token={!!token} />
-              <ProtectedRoute loggedIn={token} component={FrontStandupAdmin} />
+              <ProtectedRoute loggedIn={token} component={StandupAdmin} />
             </div>
           </div>
         </div>
@@ -57,7 +57,7 @@ export function App() {
           <div className="wrapper">
             <div className="main-panel" ref={mainPanel}>
               <HomeNavbar token={!!token} />
-              <ProtectedRoute loggedIn={token} component={FrontStandupGoal} />
+              <ProtectedRoute loggedIn={token} component={StandupGoal} />
             </div>
           </div>
         </div>
@@ -67,7 +67,7 @@ export function App() {
           <div className="wrapper">
             <div className="main-panel" ref={mainPanel}>
               <HomeNavbar token={!!token} />
-              <ProtectedRoute loggedIn={token} component={FrontStandupProfile} />
+              <ProtectedRoute loggedIn={token} component={StandupProfile} />
             </div>
           </div>
         </div>

@@ -3,9 +3,9 @@ import { useHistory, useParams } from 'react-router-dom';
 
 import { Container, Row, Col, Button, Form, Alert, Modal } from 'react-bootstrap';
 
-import styles from './../front-standup-admin.module.scss';
+import styles from  './../../app.module.scss';
 
-import { environment } from '../../../../../../../apps/standup/src/environments/environment';
+import { environment } from '../../../environments/environment';
 
 export function UsersCreate(props: any) {
     const history = useHistory();

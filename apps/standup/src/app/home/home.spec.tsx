@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import FrontStandupProfile from './front-standup-profile';
+import StandupHome from './home';
 
-describe('FrontStandupProfile', () => {
+describe('StandupHome', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<FrontStandupProfile />);
+    const { baseElement } = render(<StandupHome />);
     expect(baseElement).toBeTruthy();
   });
 });

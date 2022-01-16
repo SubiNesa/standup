@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import FrontStandupAdmin from './front-standup-admin';
+import StandupAdmin from './admin';
 
-describe('FrontStandupAdmin', () => {
+describe('StandupAdmin', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<FrontStandupAdmin />);
+    const { baseElement } = render(<StandupAdmin />);
     expect(baseElement).toBeTruthy();
   });
 });

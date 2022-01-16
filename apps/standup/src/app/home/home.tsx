@@ -1,19 +1,20 @@
 import React, { CSSProperties, useEffect, useState } from 'react';
-
-import styles from  './front-standup-home.module.scss';
-
 import { Container, Row, Col, Table, Button, Spinner, Form } from 'react-bootstrap';
+
+import styles from  './../app.module.scss';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faCalendarWeek } from '@fortawesome/free-solid-svg-icons'
-import HomeTask from './task/task';
-import UtilsDates from '../../../../../utils/dates';
+
+import HomeTask from './task';
+import UtilsDates from '../../../../../libs/utils/dates';
 
 /* eslint-disable-next-line */
-export interface FrontStandupHomeProps {}
+export interface StandupHomeProps {}
 
-import { environment } from '../../../../../../apps/standup/src/environments/environment';
+import { environment } from '../../environments/environment';
 
-export function FrontStandupHome(props: FrontStandupHomeProps) {
+export function StandupHome(props: StandupHomeProps) {
 
   const utilsDates = new UtilsDates();
   
@@ -191,4 +192,4 @@ export function FrontStandupHome(props: FrontStandupHomeProps) {
   );
 }
 
-export default FrontStandupHome;
+export default StandupHome;

@@ -3,13 +3,13 @@ import { useHistory, useParams } from 'react-router-dom';
 
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 
-import styles from './front-standup-profile.module.scss';
+import styles from './../app.module.scss';
 /* eslint-disable-next-line */
-export interface FrontStandupProfileProps {}
+export interface StandupProfileProps {}
 
-import { environment } from '../../../../../../apps/standup/src/environments/environment';
+import { environment } from '../../environments/environment';
 
-export function FrontStandupProfile(props: FrontStandupProfileProps) {
+export function StandupProfile(props: StandupProfileProps) {
     const history = useHistory();
     const params: any = useParams();
 
@@ -237,4 +237,4 @@ export function FrontStandupProfile(props: FrontStandupProfileProps) {
     );
 }
 
-export default FrontStandupProfile;
+export default StandupProfile;
