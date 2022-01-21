@@ -53,9 +53,9 @@ export function StandupGoal(props: StandupGoalProps) {
     if (settings.goal.search) {
       fetch(`${environment.api}goals/search?${query.key}=${query.value}`, requestOptions)
       .then((res) =>  !res.ok ? history.push(`${environment.path}`) : res.json())
-      .then((goal) => {
-        if (goal.ticket) {
-          setGoal({ ...goal, ...goal });
+      .then((data) => {
+        if (data.ticket) {
+          setGoal({ ...goal, ...data });
         }
       }); 
     }
@@ -85,14 +85,14 @@ export function StandupGoal(props: StandupGoalProps) {
     if (settings.goal.last) {
       fetch(`${environment.api}goals/last`, requestOptions)
         .then((res) =>  !res.ok ? history.push(`${environment.path}`) : res.json())
-        .then((goal) => {
-          if (Object.keys(goal).length !== 0 && goal.constructor === Object) {
-              if (goal?.finish > 0) {
-                goal.finish = goal.finish - 1;
+        .then((data) => {
+          	if (Object.keys(data).length !== 0 && data.constructor === Object) {
+              if (data?.finish > 0) {
+                data.finish = data.finish - 1;
               } 
-              setGoal({ ...goal, ...goal });
-            }
-          })
+        	}
+			setGoal({ ...goal, ...data });
+		})
     }
   }, [settings]);
 
