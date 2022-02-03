@@ -45,6 +45,14 @@ export const UserSchema = new mongoose.Schema ({
                 type: Boolean
             }
         }
+    },
+    rewards: {
+        drinks: {
+            type: Number
+        },
+        food: {
+            type: Number
+        }
     }
 }, {
     versionKey: false,

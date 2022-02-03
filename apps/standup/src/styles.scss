@@ -1,4 +1,46 @@
 /* You can add global styles to this file, and also import other style files */
-html, body, #root {
-    height: 100%;
+html,
+body,
+#root {
+  height: 100%;
+}
+
+.reward-animation {
+  width: 25px;
+  height: 25px;
+  border-radius: 100%;
+  animation-name: arctop, arcleft;
+  animation-duration: 0.5s, 0.5s;
+  animation-timing-function: linear, linear;
+  animation-iteration-count: 1;
+  position: absolute;
+  animation-direction: reverse;
+  margin-top: -70px;
+  animation-fill-mode: forwards;
+}
+
+@keyframes arctop {
+  0% {
+    top: 75px;
+    animation-timing-function: ease-out;
+    transition: visibility 0s, opacity 0.5s linear;
+  }
+  50% {
+    top: 0px;
+    animation-timing-function: ease-in;
+  }
+  100% {
+    top: 75px;
+  }
+}
+
+@keyframes arcleft {
+  0% {
+    left: 0px;
+    visibility: hidden;
+  }
+  100% {
+    left: calc(100% + 45px);
+   
+  }
 }

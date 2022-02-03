@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { Goal, GoalResponse} from './interfaces/goal.interface';
+import { Goal, GoalResponse } from './interfaces/goal.interface';
 import { User } from '../users/interfaces/users.interface';
 import { CreateGoalDto } from './dto/create-goal.dto';
 
@@ -11,33 +11,35 @@ import UtilsDates from '../../../../../libs/utils/dates';
 
 @Injectable()
 export class GoalsService {
-
   utilsDates = new UtilsDates();
 
   constructor(
     @InjectModel('User') private readonly userModel: Model<User>,
-    @InjectModel('Goal') private readonly goalModel: Model<Goal>,
-  ) { }
+    @InjectModel('Goal') private readonly goalModel: Model<Goal>
+  ) {}
 
   colors = [
-      '9261d2',
-      '8751cf',
-      '8144d4',
-      '742fd4',
-      '7a56d1',
-      '624cd1',
-      '5238d1',
-      '3f22c9'
+    '9261d2',
+    '8751cf',
+    '8144d4',
+    '742fd4',
+    '7a56d1',
+    '624cd1',
+    '5238d1',
+    '3f22c9',
   ];
 
   empty = {
-    "details": "",
-    "finish": -1,
-    "ticket": "",
-    "title": ""
+    details: '',
+    finish: -1,
+    ticket: '',
+    title: '',
   };
 
-  async createGoal(createGoalDto: CreateGoalDto, userId: string): Promise<Goal> {
+  async createGoal(
+    createGoalDto: CreateGoalDto,
+    userId: string
+  ): Promise<Goal> {
     const goal = new this.goalModel(createGoalDto);
     goal.userId = userId;
     await goal.save();
@@ -46,49 +48,49 @@ export class GoalsService {
 
   /**
    * Fech the latest goal and return only if finish date superior to 0 aka Today
-   * @param userId 
-   * @returns 
+   * @param userId
+   * @returns
    */
   async getLastGoal(userId): Promise<any> {
-    const list = await this.goalModel.find({userId: userId})
-      .sort({createdAt: -1})
-      .limit(1).select({
-        "_id": 0,
-        "updatedAt": 0,
-        "createdAt": 0,
-        "userId": 0
-      }
-    );
+    const list = await this.goalModel
+      .find({ userId: userId })
+      .sort({ createdAt: -1 })
+      .limit(1)
+      .select({
+        _id: 0,
+        updatedAt: 0,
+        createdAt: 0,
+        userId: 0,
+      });
     const goal: any = list[0] || {};
-    return goal?.finish === -1 ||  goal?.finish > 0 ? goal : this.empty;
+    return goal?.finish === -1 || goal?.finish > 0 ? goal : this.empty;
   }
 
   /**
    * Search for goal with ticket
-   * @param userId 
-   * @returns 
+   * @param userId
+   * @returns
    */
   async searchGoal(queries): Promise<any> {
-    const list = await this.goalModel.find({ticket: queries.ticket})
-      .sort({createdAt: -1})
+    const list = await this.goalModel
+      .find({ ticket: queries.ticket })
+      .sort({ createdAt: -1 })
       .limit(1)
       .select({
-        "_id": 0,
-        "updatedAt": 0,
-        "createdAt": 0,
-        "userId": 0
-      }
-    );
+        _id: 0,
+        updatedAt: 0,
+        createdAt: 0,
+        userId: 0,
+      });
     return list[0] || this.empty;
   }
-  
+
   /**
    * Get all the goals
-   * @param options 
-   * @returns 
+   * @param options
+   * @returns
    */
   async getAllGoals(options): Promise<any> {
-
     const goals = [];
     const date = options.from;
     let init = {};
@@ -98,12 +100,12 @@ export class GoalsService {
       if (options[key] == 'true') {
         filters.push(type);
       } else {
-        const index = filters.find(f => f === type);
+        const index = filters.find((f) => f === type);
         if (index >= 0) {
-          filters.splice(index, 1); 
+          filters.splice(index, 1);
         }
       }
-    }
+    };
 
     Object.keys(options).forEach((key) => {
       switch (key) {
@@ -118,17 +120,23 @@ export class GoalsService {
       }
     });
 
-    const monday = this.utilsDates.getMonday(date); 
-    const friday = new Date(this.utilsDates.getMonday(date).setDate(this.utilsDates.getMonday(date).getDate() + 5));
+    const monday = this.utilsDates.getMonday(date);
+    const friday = new Date(
+      this.utilsDates
+        .getMonday(date)
+        .setDate(this.utilsDates.getMonday(date).getDate() + 5)
+    );
 
     // without deletedAt
-    let filt = { $or: [{ deletedAt: { $exists: false } } , { deletedAt: { $eq: null } }]};
-    
+    let filt = {
+      $or: [{ deletedAt: { $exists: false } }, { deletedAt: { $eq: null } }],
+    };
+
     if (filters.length > 0) {
-      filt = {...filt,  ...{ teams: { "$in": filters}}}
-    } 
-   
-    const users = await this.userModel.find(filt).sort({name: 1});
+      filt = { ...filt, ...{ teams: { $in: filters } } };
+    }
+
+    const users = await this.userModel.find(filt).sort({ name: 1 });
 
     // create table of dates
     const initialize = (initial, date) => {
@@ -137,26 +145,27 @@ export class GoalsService {
       }
 
       return initial;
-    }
+    };
 
     // get data for each user
     for (let index = 0; index < users.length; index++) {
       const userId = users[index]._id;
-      const data = await this.goalModel.find({
-        userId: userId,
-        createdAt: {
-          $gte: this.utilsDates.getFormatDate(monday, '-'), 
-          $lte: this.utilsDates.getFormatDate(friday, '-')
-        }
-        
-      }).sort({createdAt: 1});
+      const data = await this.goalModel
+        .find({
+          userId: userId,
+          createdAt: {
+            $gte: this.utilsDates.getFormatDate(monday, '-'),
+            $lte: this.utilsDates.getFormatDate(friday, '-'),
+          },
+        })
+        .sort({ createdAt: 1 });
 
       const modaledGoals = await this.modalGoals(data, initialize(init, date));
 
       goals.push({
         user: users[index].name,
         color: this.colors[Math.floor(Math.random() * this.colors.length)],
-        data: Object.values(modaledGoals)
+        data: Object.values(modaledGoals),
       });
     }
 
@@ -169,25 +178,30 @@ export class GoalsService {
 
   /**
    * Modal the data
-   * 
-   * @param data 
-   * @param init 
-   * @returns 
+   *
+   * @param data
+   * @param init
+   * @returns
    */
   private async modalGoals(data, init) {
     return await data.reduce(async (accPromise, current) => {
-
       let acc = await accPromise;
       let exist: any; // if ticket already exists
       const date = this.utilsDates.getFormatDate(current.createdAt);
-      const yesterday = this.utilsDates.getFormatDate(current.createdAt, null, -1);
+      const yesterday = this.utilsDates.getFormatDate(
+        current.createdAt,
+        null,
+        -1
+      );
 
       if (!acc[date]) {
         acc[date] = [];
       }
-      
+
       if (acc[yesterday] && Array.isArray(acc[yesterday])) {
-        exist = acc[yesterday].findIndex( (goal: Goal) =>  goal.ticket === current.ticket);
+        exist = acc[yesterday].findIndex(
+          (goal: Goal) => goal.ticket === current.ticket
+        );
       }
 
       current.days = 1;
@@ -198,7 +212,7 @@ export class GoalsService {
         const tmp = { ...acc[yesterday][exist] };
         acc[yesterday][exist] = current;
         acc[yesterday][exist].days += 1;
-        acc[yesterday][exist].previous.push(tmp)
+        acc[yesterday][exist].previous.push(tmp);
         for (let index = 0; index <= exist; index++) {
           acc[date].splice(index, 0, {});
         }

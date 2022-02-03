@@ -1,10 +1,22 @@
 import React, { CSSProperties, useEffect, useState } from 'react';
-import { Container, Row, Col, Table, Button, Spinner, Form } from 'react-bootstrap';
+import {
+  Container,
+  Row,
+  Col,
+  Table,
+  Button,
+  Spinner,
+  Form,
+} from 'react-bootstrap';
 
-import styles from  './../app.module.scss';
+import styles from './../app.module.scss';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight, faCalendarWeek } from '@fortawesome/free-solid-svg-icons'
+import {
+  faArrowLeft,
+  faArrowRight,
+  faCalendarWeek,
+} from '@fortawesome/free-solid-svg-icons';
 
 import HomeTask from './task';
 import UtilsDates from '../../../../../libs/utils/dates';
@@ -13,11 +25,13 @@ import UtilsDates from '../../../../../libs/utils/dates';
 export interface StandupHomeProps {}
 
 import { environment } from '../../environments/environment';
+import useToken from '../token';
 
 export function StandupHome(props: StandupHomeProps) {
-
   const utilsDates = new UtilsDates();
-  
+
+  const { token, setToken } = useToken();
+
   const dates = [];
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
@@ -26,17 +40,20 @@ export function StandupHome(props: StandupHomeProps) {
     for (let index = 0; index < 5; index++) {
       const d = new Date(utilsDates.getMonday(date));
       d.setDate(d.getDate() + index);
-      dates.push({ day: days[index], date: `${d.getDate()}.${(d.getMonth() + 1)}`});
+      dates.push({
+        day: days[index],
+        date: `${d.getDate()}.${d.getMonth() + 1}`,
+      });
     }
-  }
-  
+  };
+
   const [state, setStandUp] = useState({
     loading: false,
     monday: utilsDates.getMonday(new Date()),
     filters: {},
     goals: [],
   });
-  
+
   buildWeekTable(state.monday);
 
   useEffect(() => {
@@ -44,14 +61,14 @@ export function StandupHome(props: StandupHomeProps) {
     console.log(state);
     setStandUp({ ...state, loading: true });
 
-    let apiUrl = `${environment.api}goals?from=${utilsDates.getFormatDate(state.monday, '-')}`;
+    let apiUrl = `${environment.api}goals?from=${utilsDates.getFormatDate(
+      state.monday,
+      '-'
+    )}`;
     if (Object.keys(state.filters).length > 0) {
-      let filters = '?';
+      let filters = '';
       Object.keys(state.filters).forEach((key, index) => {
-        if (index > 0) {
-          filters += '&';
-        }
-        filters += `${key}=${state.filters[key]}`;
+        filters += `&${key}=${state.filters[key]}`;
       });
       apiUrl += filters;
     }
@@ -59,38 +76,60 @@ export function StandupHome(props: StandupHomeProps) {
     fetch(apiUrl)
       .then((res) => res.json())
       .then((goals) => {
-        setStandUp({...state, ...{ loading: false, goals: goals}});
+        setStandUp({ ...state, ...{ loading: false, goals: goals } });
       });
   }, [state.monday, state.filters]);
 
   const onChangeDates = (days) => {
-    const monday = days === 0 ? utilsDates.getMonday(new Date()) : utilsDates.getMonday(state.monday);
-    const date = new Date(monday.setDate(monday.getDate() + days))
-    setStandUp({...state,  ...{ monday: date, goals: [] }});
-  }
+    const monday =
+      days === 0
+        ? utilsDates.getMonday(new Date())
+        : utilsDates.getMonday(state.monday);
+    const date = new Date(monday.setDate(monday.getDate() + days));
+    setStandUp({ ...state, ...{ monday: date, goals: [] } });
+  };
 
   const onChangeFilters = (event) => {
-    state.filters = {...state.filters, ...{[event.target.name]: event.target.checked}};
-    setStandUp({...state, ...{filters: state.filters, goals: []}});
-  }
-
+    state.filters = {
+      ...state.filters,
+      ...{ [event.target.name]: event.target.checked },
+    };
+    setStandUp({ ...state, ...{ filters: state.filters, goals: [] } });
+  };
 
   const navigationButtons: CSSProperties = {
-   'marginBottom': '15px'
-  }
+    marginBottom: '15px',
+  };
   const badgeSep: CSSProperties = {
-   'marginBottom': '5px'
-  }
+    marginBottom: '5px',
+  };
   const td: CSSProperties = {
-   'width': '17%'
-  }
+    width: '17%',
+  };
 
   return (
     <div>
       <div className={styles.header}>
         <Container>
-          <Row >
-            <Col ><h3>Goals viewer</h3></Col>
+          <Row>
+            <Col md={11}>
+              <h3>Goals viewer</h3>
+            </Col>
+            {token ? (
+              <>
+                <Col className="text-end">
+                  <Button
+                    variant="outline-success"
+                    size="sm"
+                    href={`${environment.path}goal`}
+                  >
+                    Create
+                  </Button>
+                </Col>
+              </>
+            ) : (
+              ''
+            )}
           </Row>
         </Container>
       </div>
@@ -99,8 +138,8 @@ export function StandupHome(props: StandupHomeProps) {
           <Row style={navigationButtons} className="text-end">
             <Col md={10}>
               <Form>
-                <Form.Check 
-                  inline 
+                <Form.Check
+                  inline
                   type="checkbox"
                   id="front"
                   label="Frontend"
@@ -108,80 +147,113 @@ export function StandupHome(props: StandupHomeProps) {
                   onClick={onChangeFilters}
                 />
                 <Form.Check
-                  inline 
+                  inline
                   type="checkbox"
                   id="back"
                   label="Backend"
                   name="back"
-                  onClick={onChangeFilters} 
+                  onClick={onChangeFilters}
                 />
               </Form>
             </Col>
             <Col md={2}>
-              <Button 
-                variant="outline-secondary" 
-                size="sm" 
-                onClick={onChangeDates.bind(this, -7)} 
-                disabled={state.loading}> <FontAwesomeIcon icon={faArrowLeft} /> </Button> 
-              <Button 
-                variant="outline-secondary" 
-                size="sm" 
-                onClick={onChangeDates.bind(this, 0)} 
-                className="ms-2"
-                disabled={state.loading}> <FontAwesomeIcon icon={faCalendarWeek}/> </Button> 
-              <Button 
-                variant="outline-secondary" 
-                size="sm" 
-                onClick={onChangeDates.bind(this, 7)} 
+              <Button
+                variant="outline-secondary"
+                size="sm"
+                onClick={onChangeDates.bind(this, -7)}
                 disabled={state.loading}
-                className="ms-2"> <FontAwesomeIcon icon={faArrowRight} /> </Button>
+              >
+                {' '}
+                <FontAwesomeIcon icon={faArrowLeft} />{' '}
+              </Button>
+              <Button
+                variant="outline-secondary"
+                size="sm"
+                onClick={onChangeDates.bind(this, 0)}
+                className="ms-2"
+                disabled={state.loading}
+              >
+                {' '}
+                <FontAwesomeIcon icon={faCalendarWeek} />{' '}
+              </Button>
+              <Button
+                variant="outline-secondary"
+                size="sm"
+                onClick={onChangeDates.bind(this, 7)}
+                disabled={state.loading}
+                className="ms-2"
+              >
+                {' '}
+                <FontAwesomeIcon icon={faArrowRight} />{' '}
+              </Button>
             </Col>
           </Row>
           <Row>
-            
             <Col md={12}>
-              <Table bordered >
+              <Table bordered>
                 <tbody>
                   <tr>
                     <td>
-                    { 
-                      state.loading ? <Spinner animation="border" variant="primary" size="sm"/> : <></>
-                    }
+                      {state.loading ? (
+                        <Spinner
+                          animation="border"
+                          variant="primary"
+                          size="sm"
+                        />
+                      ) : (
+                        <></>
+                      )}
                     </td>
-                    {
-                      dates.map((d, dIndex) => {
-                        return <td style={td} key={('d' + dIndex).toString()}>{d.day} {d.date}</td>
-                      })
-                    }
+                    {dates.map((d, dIndex) => {
+                      return (
+                        <td style={td} key={('d' + dIndex).toString()}>
+                          {d.day} {d.date}
+                        </td>
+                      );
+                    })}
                   </tr>
-                  {
-                    state.goals.map((item, index) =>{
-                      return <tr key={('item' + index).toString()}><td>{item.user}</td>
-                      
-                      {
-                        item.data.map((goals, tdKey) => {
+                  {state.goals.map((item, index) => {
+                    return (
+                      <tr key={('item' + index).toString()}>
+                        <td>{item.user}</td>
+
+                        {item.data.map((goals, tdKey) => {
                           if (goals && Array.isArray(goals)) {
-                              return <td key={('goals' + tdKey).toString()}>
-                              {
-                                goals.map((goal, sectionId) => {
+                            return (
+                              <td key={('goals' + tdKey).toString()}>
+                                {goals.map((goal, sectionId) => {
                                   if (goal && goal.ticket) {
-                                    return <section key={('goal' + sectionId).toString()}>
-                                      <HomeTask goal={goal} color={item.color}/>
-                                        <br/>
+                                    return (
+                                      <section
+                                        key={('goal' + sectionId).toString()}
+                                      >
+                                        <HomeTask
+                                          goal={goal}
+                                          color={item.color}
+                                        />
+                                        <br />
                                         <div style={badgeSep}></div>
                                       </section>
+                                    );
                                   } else {
-                                    return <section key={('goal' + sectionId).toString()}><br/><div style={badgeSep}></div></section>
+                                    return (
+                                      <section
+                                        key={('goal' + sectionId).toString()}
+                                      >
+                                        <br />
+                                        <div style={badgeSep}></div>
+                                      </section>
+                                    );
                                   }
-                                })
-                              }</td>
+                                })}
+                              </td>
+                            );
                           }
-                          return <td key={('goals' + tdKey).toString()}></td>
-                        })
-                      }
+                          return <td key={('goals' + tdKey).toString()}></td>;
+                        })}
                       </tr>
-                    })
-                  }
+                    );
+                  })}
                 </tbody>
               </Table>
             </Col>

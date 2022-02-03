@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { sign } from 'jsonwebtoken';
@@ -9,17 +13,16 @@ import { User } from '../users/interfaces/users.interface';
 
 @Injectable()
 export class AuthService {
-
   cryptr: any;
 
-  constructor(
-    @InjectModel('User') private readonly userModel: Model<User>
-  ) {
+  constructor(@InjectModel('User') private readonly userModel: Model<User>) {
     this.cryptr = new Cryptr(process.env.ENCRYPT_JWT_SECRET);
   }
 
   async createAccessToken(userId: string) {
-    const accessToken = sign({userId}, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION || '5d'});
+    const accessToken = sign({ userId }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRATION || '5d',
+    });
     return this.encryptText(accessToken);
   }
 
@@ -34,14 +37,16 @@ export class AuthService {
   private jwtExtractor(request) {
     let token = null;
     if (request.header('x-token')) {
-        token = request.get('x-token');
+      token = request.get('x-token');
     } else if (request.headers.authorization) {
-        token = request.headers.authorization.replace('Bearer ', '').replace(' ', '');
+      token = request.headers.authorization
+        .replace('Bearer ', '')
+        .replace(' ', '');
     } else if (request.body.token) {
-        token = request.body.token.replace(' ', '');
+      token = request.body.token.replace(' ', '');
     }
     if (request.query.token) {
-        token = request.body.token.replace(' ', '');
+      token = request.body.token.replace(' ', '');
     }
     const cryptr = new Cryptr(process.env.ENCRYPT_JWT_SECRET);
     if (token) {
@@ -51,8 +56,8 @@ export class AuthService {
         throw new BadRequestException('Bad request.');
       }
     }
-        return token;
-    }
+    return token;
+  }
 
   returnJwtExtractor() {
     return this.jwtExtractor;

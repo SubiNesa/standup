@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Req, Body, Query, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Req,
+  Body,
+  Query,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiTags,
   ApiCreatedResponse,
@@ -54,10 +64,10 @@ export class GoalsController {
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(AuthGuard('jwt'))
   //@Roles('admin')
-  @ApiOperation({summary: 'Create one goal'})
+  @ApiOperation({ summary: 'Create one goal' })
   @ApiBearerAuth()
   @ApiCreatedResponse({})
   async createGoal(@Req() req, @Body() createGoalDto: CreateGoalDto) {
-      return await this.goalsService.createGoal(createGoalDto, req?.user?._id);
+    return await this.goalsService.createGoal(createGoalDto, req?.user?._id);
   }
 }

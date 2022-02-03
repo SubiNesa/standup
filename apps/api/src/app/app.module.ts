@@ -5,8 +5,16 @@ import { ConfigModule } from '@nestjs/config';
 
 import { GoalsModule } from './goals/goals.module';
 import { UsersModule } from './users/users.module';
+import { RewardsModule } from './rewards/rewards.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), GoalsModule, UsersModule, AuthModule, MongooseModule.forRoot(process.env.MONGO_URI)]
+  imports: [
+    ConfigModule.forRoot(),
+    GoalsModule,
+    UsersModule,
+    AuthModule,
+    RewardsModule,
+    MongooseModule.forRoot(process.env.MONGO_URI),
+  ],
 })
 export class AppModule {}

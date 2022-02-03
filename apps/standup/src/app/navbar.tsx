@@ -28,7 +28,7 @@ export function HomeNavbar(props: NavbarProps) {
         <Nav className="me-auto">
           <Nav.Link href={`${environment.path}home`}>Home</Nav.Link>
           {
-              props.token ? <Nav.Link href={`${environment.path}goal`}>Create</Nav.Link> : ''
+              props.token ? <><Nav.Link href={`${environment.path}reward`}>Reward</Nav.Link></> : ''
           }
         </Nav>
         <Nav>
