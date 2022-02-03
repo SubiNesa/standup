@@ -11,4 +11,10 @@ export interface User extends Document {
     updatedAt: Date;
     deletedAt: Date;
     settings?: Object;
+    rewards?: Reward;
+}
+
+interface Reward {
+    drinks: number,
+    food: number
 }

@@ -12,13 +12,13 @@ import { environment } from '../../environments/environment';
 export interface StandupAdminProps {}
 
 const switchStyle: CSSProperties = {
-  'paddingLeft': '0px'
- }
+  paddingLeft: '0px',
+};
 
 export function StandupAdmin(props: StandupAdminProps) {
   return (
     <div>
-      <Switch style={switchStyle} > 
+      <Switch style={switchStyle}>
         <Route exact path={`${environment.path}admin`}>
           <UsersList />
         </Route>
@@ -28,8 +28,7 @@ export function StandupAdmin(props: StandupAdminProps) {
         <Route path={`${environment.path}admin/user/:id`}>
           <UsersCreate />
         </Route>
-        <Route>
-        </Route>
+        <Route></Route>
       </Switch>
     </div>
   );

@@ -12,6 +12,7 @@ import { StandupHome } from './home/home';
 import { StandupGoal } from './goal/goal';
 import { StandupAdmin } from './admin/admin';
 import { StandupProfile } from './profile/profile';
+import StandupReward from './reward/reward';
 
 export function App() {
   const mainPanel = React.useRef(null);
@@ -38,6 +39,16 @@ export function App() {
             <div className="main-panel" ref={mainPanel}>
               <HomeNavbar token={!!token} />
               <StandupHome />
+            </div>
+          </div>
+        </div>
+      </Route>
+      <Route exact path={`${environment.path}reward`}>
+        <div className={styles.app}>
+          <div className="wrapper">
+            <div className="main-panel" ref={mainPanel}>
+              <HomeNavbar token={!!token} />
+              <StandupReward />
             </div>
           </div>
         </div>
