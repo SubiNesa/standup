@@ -9,6 +9,7 @@ import {
   OverlayTrigger,
   Tooltip,
 } from 'react-bootstrap';
+import { useHistory } from 'react-router';
 
 import styles from './../app.module.scss';
 
@@ -27,6 +28,8 @@ export interface StandupRewardProps {}
 import { environment } from '../../environments/environment';
 
 export function StandupReward(props: StandupRewardProps) {
+  const history = useHistory();
+
   const requestOptions = {
     method: 'GET',
     headers: {
@@ -61,7 +64,9 @@ export function StandupReward(props: StandupRewardProps) {
     setStandUp({ ...state, loading: true });
 
     fetch(`${environment.api}rewards`, requestOptions)
-      .then((res) => res.json())
+      .then((res) =>
+        !res.ok ? history.push(`${environment.path}`) : res.json()
+      )
       .then((rewards) => {
         setStandUp({ ...state, ...{ loading: false, rewards: rewards } });
       });
