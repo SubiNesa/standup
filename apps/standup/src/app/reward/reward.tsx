@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Container,
   Row,
@@ -72,31 +72,6 @@ export function StandupReward(props: StandupRewardProps) {
       });
   }, []);
 
-  const td: CSSProperties = {
-    width: '17%',
-  };
-  const actions: CSSProperties = {
-    width: '150px',
-  };
-  const progress: CSSProperties = {
-    backgroundColor: 'transparent',
-  };
-  const btnCircle: CSSProperties = {
-    width: '30px',
-    height: '30px',
-    padding: '6px 0px',
-    borderRadius: '15px',
-    textAlign: 'center',
-    fontSize: '12px',
-    lineHeight: '1.42857',
-  };
-  const navigationButtons: CSSProperties = {
-    marginBottom: '15px',
-  };
-  const tableTd: CSSProperties = {
-    position: 'relative',
-  };
-
   const addDrinkTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
       Add one drink
@@ -131,7 +106,6 @@ export function StandupReward(props: StandupRewardProps) {
 
         // check for error response
         if (!response.ok) {
-          console.log(response);
           setError({
             ...error, 
             ...{
@@ -174,7 +148,7 @@ export function StandupReward(props: StandupRewardProps) {
   };
 
   return (
-    <div>
+    <div className='reward'>
       <Notifications
         show={error.display}
         message={error.message}
@@ -193,7 +167,7 @@ export function StandupReward(props: StandupRewardProps) {
       </div>
       <div>
         <Container fluid>
-          <Row style={navigationButtons} className="text-end me-1">
+          <Row className="text-end me-1 mb-2">
             <Col md={12} className="text-muted">
               <span className="m-2">
                 3 <FontAwesomeIcon icon={faBeer} className="text-info" />
@@ -212,10 +186,10 @@ export function StandupReward(props: StandupRewardProps) {
                   {state.rewards.map((item, index) => {
                     return (
                       <tr key={('item' + index).toString()}>
-                        <td scope="col" style={td}>
+                        <td scope="col">
                           {item.name}
                         </td>
-                        <td style={tableTd}>
+                        <td>
                           <ButtonAnimationReward index={index} animation={state.animation}></ButtonAnimationReward>
                           
                           <div>
@@ -227,7 +201,7 @@ export function StandupReward(props: StandupRewardProps) {
                                   ? `${item?.rewards?.drinks}`
                                   : ''
                               }
-                              style={progress}
+                              className="progress"
                             />
                             <ProgressBar
                               variant="warning"
@@ -237,11 +211,11 @@ export function StandupReward(props: StandupRewardProps) {
                                   ? `${item?.rewards?.food}`
                                   : ''
                               }
-                              style={progress}
+                              className="progress"
                             />
                           </div>
                         </td>
-                        <td className="text-end" style={actions}>
+                        <td className="text-end reward-actions">
                           
                           <OverlayTrigger
                             placement="top"
@@ -252,7 +226,7 @@ export function StandupReward(props: StandupRewardProps) {
                               variant="outline-info"
                               onClick={() => addDrink(item, index)}
                               disabled={item.voted || voted}
-                              style={btnCircle}
+                              className="reward-btn-circle"
                             >
                               <FontAwesomeIcon icon={faBeer} />
                             </Button>
@@ -266,8 +240,7 @@ export function StandupReward(props: StandupRewardProps) {
                               variant="outline-warning"
                               onClick={() => addFood(item, index)}
                               disabled={item.voted || voted}
-                              className="ms-1"
-                              style={btnCircle}
+                              className="ms-1 reward-btn-circle"
                             >
                               <FontAwesomeIcon icon={faPizzaSlice} />
                             </Button>
@@ -281,8 +254,7 @@ export function StandupReward(props: StandupRewardProps) {
                               variant="outline-success"
                               onClick={() => removeDrink(item, index)}
                               disabled={item.voted || voted}
-                              className="ms-1"
-                              style={btnCircle}
+                              className="ms-1 reward-btn-circle"
                             >
                               <FontAwesomeIcon icon={faMedal} />
                             </Button>
@@ -301,8 +273,10 @@ export function StandupReward(props: StandupRewardProps) {
   );
 }
 
-
-
+/**
+ * Rewared animation once clicked on the button
+ * @param props 
+ */
 function ButtonAnimationReward(props: any) {
   return (
      props.index === props.animation.key ? <>

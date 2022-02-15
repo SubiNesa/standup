@@ -5,18 +5,51 @@ body,
   height: 100%;
 }
 
-.reward-animation {
-  width: 25px;
-  height: 25px;
-  border-radius: 100%;
-  animation-name: arctop, arcleft;
-  animation-duration: 0.5s, 0.5s;
-  animation-timing-function: linear, linear;
-  animation-iteration-count: 1;
-  position: absolute;
-  animation-direction: reverse;
-  margin-top: -70px;
-  animation-fill-mode: forwards;
+
+.reward {
+  &-actions {
+    width: 150px;
+  }
+
+  &-btn-circle {
+    &.btn {
+      width: 30px;
+      height: 30px;
+      padding: 6px 0px;
+      border-radius: 15px;
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.42857;
+    }
+  }
+
+  &-animation {
+    width: 25px;
+    height: 25px;
+    border-radius: 100%;
+    animation-name: arctop, arcleft;
+    animation-duration: 0.5s, 0.5s;
+    animation-timing-function: linear, linear;
+    animation-iteration-count: 1;
+    position: absolute;
+    animation-direction: reverse;
+    margin-top: -70px;
+    animation-fill-mode: forwards;
+  }
+
+  .progress {
+    background-color: transparent;
+  }
+
+  td {
+    &:first-child {
+      width: 17%;
+    }
+
+    &:nth-child(2) {
+      position: relative;
+    }
+  }
 }
 
 @keyframes arctop {
