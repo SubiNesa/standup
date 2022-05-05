@@ -65,3 +65,18 @@ export class CreateGoalDto {
   @IsString()
   readonly userId: string;
 }
+
+export class CreateCommentDto {
+  @ApiProperty({
+    example: 'Comment ticket',
+    description: 'comment of goal',
+    format: 'string',
+    minLength: 3,
+    maxLength: 255,
+  })
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(5)
+  @MaxLength(255)
+  readonly comment: string;
+}

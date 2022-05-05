@@ -8,6 +8,9 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Put,
+  Param,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -20,7 +23,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { GoalsService } from './goals.service';
 
-import { CreateGoalDto, SearchGoalDto } from './dto/create-goal.dto';
+import { CreateGoalDto, SearchGoalDto, CreateCommentDto } from './dto/create-goal.dto';
 import { of } from 'rxjs';
 
 @ApiTags('Goals')
@@ -69,5 +72,15 @@ export class GoalsController {
   @ApiCreatedResponse({})
   async createGoal(@Req() req, @Body() createGoalDto: CreateGoalDto) {
     return await this.goalsService.createGoal(createGoalDto, req?.user?._id);
+  }
+
+  @Put(':goalId/comment')
+  @HttpCode(HttpStatus.CREATED)
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Create new comment by updating the goal' })
+  @ApiBearerAuth()
+  @ApiCreatedResponse({})
+  async addComment(@Param('goalId') goalId, @Req() req, @Body() body: CreateCommentDto) {
+    return await this.goalsService.addComment(goalId, body.comment, req?.user?._id);
   }
 }

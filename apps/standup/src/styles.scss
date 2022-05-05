@@ -77,3 +77,17 @@ body,
    
   }
 }
+
+fieldset {
+  border: 1px solid #dee2e6 !important;
+  padding: 2px !important;
+  margin: 3px 0 !important;
+  border-radius: 4px;
+  legend {
+    float: none !important;
+    padding: inherit !important;
+    font-size: 10px;
+    margin-bottom: 0px;
+    width: auto !important;
+  }
+}

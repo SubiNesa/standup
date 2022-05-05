@@ -28,6 +28,9 @@ export const GoalSchema = new mongoose.Schema(
     days: {
       type: Number,
     },
+    comments: {
+      type: Array,
+    },
     previous: {
       type: [],
     },

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 // Importing the Bootstrap CSS
@@ -10,7 +10,9 @@ import {
   faClock,
   faExclamationTriangle,
   faBullseye,
+  faComment,
   faComments,
+  faCommentMedical,
   faFlagCheckered,
   faEdit,
   faTrashAlt,
@@ -20,7 +22,9 @@ library.add(
   faExclamationTriangle,
   faBullseye,
   faClock,
+  faComment,
   faComments,
+  faCommentMedical,
   faFlagCheckered,
   faEdit,
   faTrashAlt
@@ -29,6 +33,20 @@ library.add(
 import App from './app/app';
 
 import { BrowserRouter } from 'react-router-dom';
+
+import { environment } from './environments/environment';
+
+// const [ info, setInfo ] = useState({});
+
+// useEffect(() => {
+//   fetch(`${environment.api}app`)
+//     .then((res) => res.json())
+//     .then((app) => {
+//       console.log(app);
+    
+//       setInfo({ ...info, ...app });
+//     });
+// }, []);
 
 ReactDOM.render(
   <React.StrictMode>

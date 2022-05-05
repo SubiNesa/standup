@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { Goal, GoalResponse } from './interfaces/goal.interface';
+import { Goal } from './interfaces/goal.interface';
 import { User } from '../users/interfaces/users.interface';
 import { CreateGoalDto } from './dto/create-goal.dto';
 
@@ -47,6 +47,37 @@ export class GoalsService {
   }
 
   /**
+   * Add the comments to the goal
+   * @param goalId 
+   * @param comment 
+   * @param userId 
+   * @returns 
+   */
+  async addComment(
+    goalId: string,
+    comment: string,
+    userId: string
+  ): Promise<Goal> {
+    const goal = await this.goalModel.findById(goalId);
+
+    if (!goal) {
+      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (goal.userId != userId) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
+
+    if (!goal.comments) {
+      goal.comments = [];
+    }
+    goal.comments.push({comment, date: new Date()});
+
+    await goal.save();
+    return goal;
+  }
+
+  /**
    * Fech the latest goal and return only if finish date superior to 0 aka Today
    * @param userId
    * @returns
@@ -68,7 +99,7 @@ export class GoalsService {
 
   /**
    * Search for goal with ticket
-   * @param userId
+   * @param queries
    * @returns
    */
   async searchGoal(queries): Promise<any> {
@@ -149,10 +180,10 @@ export class GoalsService {
 
     // get data for each user
     for (let index = 0; index < users.length; index++) {
-      const userId = users[index]._id;
+      const user_id = users[index]._id;
       const data = await this.goalModel
         .find({
-          userId: userId,
+          userId: user_id,
           createdAt: {
             $gte: this.utilsDates.getFormatDate(monday, '-'),
             $lte: this.utilsDates.getFormatDate(friday, '-'),
@@ -161,7 +192,6 @@ export class GoalsService {
         .sort({ createdAt: 1 });
 
       const modaledGoals = await this.modalGoals(data, initialize(init, date));
-
       goals.push({
         user: users[index].name,
         color: this.colors[Math.floor(Math.random() * this.colors.length)],

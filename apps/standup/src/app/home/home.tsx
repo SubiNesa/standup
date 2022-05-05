@@ -19,6 +19,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import HomeTask from './task';
+import CommentsTask from './comments';
 import UtilsDates from '../../../../../libs/utils/dates';
 
 /* eslint-disable-next-line */
@@ -26,11 +27,36 @@ export interface StandupHomeProps {}
 
 import { environment } from '../../environments/environment';
 import useToken from '../token';
+import Notifications from '../notifications';
 
 export function StandupHome(props: StandupHomeProps) {
   const utilsDates = new UtilsDates();
 
   const { token, setToken } = useToken();
+
+  // refresh page after update of data
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const [showComments, setShowComments] = useState({
+    show: false,
+    goal: null
+  });
+
+  const [notification, setNotification] = useState({
+    display: false,
+    message: '',
+    title: '',
+    status: null,
+  });
+
+  const handleNotification = (data) => setNotification(data);
+  const handleCloseComments = () => setShowComments({show: false, goal: null});
+  const handleShowComments = (goal) => setShowComments({show: true, goal: goal});
+  const onShowComments = (goal) => {
+    if (goal) {
+      handleShowComments(goal);
+    }
+  }
 
   const dates = [];
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -78,7 +104,7 @@ export function StandupHome(props: StandupHomeProps) {
       .then((goals) => {
         setStandUp({ ...state, ...{ loading: false, goals: goals } });
       });
-  }, [state.monday, state.filters]);
+  }, [state.monday, state.filters, refreshKey]);
 
   const onChangeDates = (days) => {
     const monday =
@@ -97,6 +123,10 @@ export function StandupHome(props: StandupHomeProps) {
     setStandUp({ ...state, ...{ filters: state.filters, goals: [] } });
   };
 
+  const handleUpdate = () => {
+    setRefreshKey(oldKey => oldKey +1)
+  };
+
   const navigationButtons: CSSProperties = {
     marginBottom: '15px',
   };
@@ -109,6 +139,13 @@ export function StandupHome(props: StandupHomeProps) {
 
   return (
     <div>
+      <Notifications
+        show={notification.display}
+        message={notification.message}
+        status={notification.status}
+        title={notification.title}
+        setShow={(display: boolean) => setNotification({ ...notification, ...{ display } })}
+      />
       <div className={styles.header}>
         <Container>
           <Row>
@@ -230,6 +267,7 @@ export function StandupHome(props: StandupHomeProps) {
                                         <HomeTask
                                           goal={goal}
                                           color={item.color}
+                                          showComments={onShowComments.bind(this, goal)}
                                         />
                                         <br />
                                         <div style={badgeSep}></div>
@@ -260,6 +298,12 @@ export function StandupHome(props: StandupHomeProps) {
           </Row>
         </Container>
       </div>
+      <CommentsTask
+        comment={showComments}
+        handleNotification={handleNotification}
+        handleClose={handleCloseComments}
+        handleUpdate={handleUpdate}
+      ></CommentsTask>
     </div>
   );
 }

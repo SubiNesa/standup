@@ -11,6 +11,7 @@ export interface Goal extends Document {
   ticket: string;
   title: string;
   previous: any;
+  comments: Array<any>;
 }
 
 export interface GoalResponse {
@@ -21,4 +22,5 @@ export interface GoalResponse {
   ticket: string;
   title: string;
   previous: any;
+  comments: Array<any>;
 }

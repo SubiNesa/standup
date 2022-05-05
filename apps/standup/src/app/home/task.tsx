@@ -2,14 +2,17 @@ import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 
 import { Row, Col, OverlayTrigger, Popover } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import UtilsDates from '@standup/utils/dates';
 
 /* eslint-disable-next-line */
 export interface HomeTask {
   goal: any;
   color: string;
+  showComments: any;
 }
 
 export function HomeTask(props: HomeTask) {
+  const utilsDates = new UtilsDates();
   const taskRef = useRef();
 
   const displayDays = (day) => {
@@ -49,7 +52,7 @@ export function HomeTask(props: HomeTask) {
   const { width, height } = useResize(taskRef);
 
   const renderTooltip = (props) => (
-    <Popover id="popover-basic" {...props}>
+    <Popover id="popover-basic">
       <Popover.Header as="h3">{props.goal.ticket}</Popover.Header>
       <Popover.Body>
         <Row>
@@ -58,18 +61,40 @@ export function HomeTask(props: HomeTask) {
           </Col>
           <Col>{props.goal.title}</Col>
         </Row>
-        <Row>
-          <Col sm={1}>
-            <FontAwesomeIcon icon={['fas', 'comments']} />
-          </Col>
-          <Col>{props.goal.details}</Col>
-        </Row>
+        {props.goal?.details ? (
+          <Row>
+            <Col sm={1}>
+              <FontAwesomeIcon icon={['fas', 'comment']} />
+            </Col>
+            <Col>{props.goal.details}</Col>
+          </Row>
+        ) : (
+          <></>
+        )}
         <Row>
           <Col sm={1}>
             <FontAwesomeIcon icon={['fas', 'flag-checkered']} />
           </Col>
           <Col>{displayDays(props.goal.finish)}</Col>
         </Row>
+        {props.goal.comments && props.goal.comments.length > 0 ? (
+          props.goal.comments.map((comment, commentKey) => {
+            return (
+              <Row key={commentKey}>
+                <Col sm={1}>
+                  <FontAwesomeIcon icon={['fas', 'comments']} />
+                </Col>
+                <Col className="text-truncate">
+                  {new Date(comment.date).toLocaleDateString()}{' '}
+                  {new Date(comment.date).toLocaleTimeString()}{' '}
+                  {comment.comment}
+                </Col>
+              </Row>
+            );
+          })
+        ) : (
+          <></>
+        )}
         {props.goal.blocked ? (
           <Row>
             <Col sm={1}>
@@ -78,7 +103,7 @@ export function HomeTask(props: HomeTask) {
             <Col>Blocked</Col>
           </Row>
         ) : (
-          <span></span>
+          <></>
         )}
         {props.goal.previous && Array.isArray(props.goal.previous) ? (
           props.goal.previous.map((p, pIndex) => {
@@ -91,18 +116,40 @@ export function HomeTask(props: HomeTask) {
                   </Col>
                   <Col>{p.title}</Col>
                 </Row>
-                <Row>
-                  <Col sm={1}>
-                    <FontAwesomeIcon icon={['fas', 'comments']} />
-                  </Col>
-                  <Col>{p.details}</Col>
-                </Row>
+                {p.details ? (
+                  <Row>
+                    <Col sm={1}>
+                      <FontAwesomeIcon icon={['fas', 'comment']} />
+                    </Col>
+                    <Col>{p.details}</Col>
+                  </Row>
+                ) : (
+                  <></>
+                )}
                 <Row>
                   <Col sm={1}>
                     <FontAwesomeIcon icon={['fas', 'flag-checkered']} />
                   </Col>
                   <Col>{displayDays(p.finish)}</Col>
                 </Row>
+                {p.comments && p.comments.length > 0 ? (
+                  p.comments.map((comment, commentKey) => {
+                    return (
+                      <Row key={commentKey}>
+                        <Col sm={1}>
+                          <FontAwesomeIcon icon={['fas', 'comments']} />
+                        </Col>
+                        <Col className="text-truncate">
+                          {new Date(comment.date).toLocaleDateString()}{' '}
+                          {new Date(comment.date).toLocaleTimeString()}{' '}
+                          {comment.comment}
+                        </Col>
+                      </Row>
+                    );
+                  })
+                ) : (
+                  <></>
+                )}
                 {p.blocked ? (
                   <Row>
                     <Col sm={1}>
@@ -154,6 +201,16 @@ export function HomeTask(props: HomeTask) {
       <div style={setStyle()} ref={taskRef}>
         {renderBlocked(props.goal)}
         {props.goal.ticket}
+        {props.goal.comments && props.goal.comments.length > 0 ? (
+          <span className="float-end ms-3" onClick={props.showComments}>
+            <span className="me-1">{props.goal.comments.length}</span>
+            <FontAwesomeIcon icon={['fas', 'comments']} />
+          </span>
+        ) : (
+          <span className="float-end ms-3" onClick={props.showComments}>
+            <FontAwesomeIcon icon={['fas', 'comment-medical']} />
+          </span>
+        )}
         <span className="float-end">{displayDays(props.goal.finish)}</span>
       </div>
     </OverlayTrigger>
