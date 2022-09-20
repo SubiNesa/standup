@@ -44,6 +44,7 @@ Create .env file
     ENCRYPT_JWT_SECRET='YOURJWTENCRIPTINGPASSCHANGEIT'
     JWT_EXPIRATION=5d
     GLOBAL_PREFIX='api'
+    TICKET_LINK='https://www.google.com/search?q={{TICKET_LINK}}'
 
 Start Front
 

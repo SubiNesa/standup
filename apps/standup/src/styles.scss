@@ -5,6 +5,15 @@ body,
   height: 100%;
 }
 
+.cstm-link {
+  color: white;
+  text-decoration: none;
+  &:hover {
+    color: white;
+    text-decoration: underline;
+  }
+}
+
 
 .reward {
   &-actions {

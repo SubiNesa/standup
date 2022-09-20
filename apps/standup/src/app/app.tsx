@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './app.module.scss';
 
 import { Route, Redirect, Switch } from 'react-router-dom';
@@ -18,6 +18,26 @@ export function App() {
   const mainPanel = React.useRef(null);
 
   const { token, setToken } = useToken();
+
+  const app = sessionStorage.getItem('info');
+  const info = app ? JSON.parse(app) : {};
+
+  if (!info.ticket_link) {
+    fetch(`${environment.api}app`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+    .then((res) =>
+        res.json()
+      )
+    .then((res) => {
+      sessionStorage.setItem('info', JSON.stringify(res))
+    }
+    )
+  }
+
 
   const ProtectedRoute = ({ component: Comp, loggedIn }) => {
     if (loggedIn) {

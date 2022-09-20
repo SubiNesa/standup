@@ -51,6 +51,17 @@ export function HomeTask(props: HomeTask) {
 
   const { width, height } = useResize(taskRef);
 
+  const app = sessionStorage.getItem('info');
+  const info = app ? JSON.parse(app) : {};
+
+  const setTicketLink = (ticket) => {
+    if (!info.ticket_link) {
+      return '#';
+    }
+
+    return info.ticket_link.replace(/{{.*}}/i, ticket)
+  };
+
   const renderTooltip = (props) => (
     <Popover id="popover-basic">
       <Popover.Header as="h3">{props.goal.ticket}</Popover.Header>
@@ -200,7 +211,13 @@ export function HomeTask(props: HomeTask) {
     >
       <div style={setStyle()} ref={taskRef}>
         {renderBlocked(props.goal)}
-        {props.goal.ticket}
+        {
+         info.ticket_link ? (
+           <a className="cstm-link" href={setTicketLink(props.goal.ticket)} target="_blank">{props.goal.ticket}</a>
+         ) : (
+           props.goal.ticket
+         )
+        }
         {props.goal.comments && props.goal.comments.length > 0 ? (
           <span className="float-end ms-3" onClick={props.showComments}>
             <span className="me-1">{props.goal.comments.length}</span>
