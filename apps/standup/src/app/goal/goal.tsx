@@ -61,6 +61,7 @@ export function StandupGoal(props: StandupGoalProps) {
         )
         .then((data) => {
           if (data.ticket) {
+            data.comments = [];
             setGoal({ ...goal, ...data });
           }
         });
