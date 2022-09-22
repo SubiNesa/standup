@@ -108,6 +108,7 @@ export function StandupGoal(props: StandupGoalProps) {
               data.finish = data.finish - 1;
             }
           }
+          data.comments = [];
           setGoal({ ...goal, ...data });
         });
     }
